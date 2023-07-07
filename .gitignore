@@ -1,0 +1,7 @@
+
+*.json
+*.sqlite
+*.config
+*.vsidx
+*.lock
+*.wsuo
