@@ -1,58 +1,106 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Xbox Launcher v1.0</title>
-    <script src="scripts/common.js" type="module"></script>
-    <script src="scripts/googlesearch.js" type="module"></script>
-    <script src="scripts/gamename.js" type="module"></script>
-    <script src="scripts/msstore.js" type="module"></script>
-    <script src="scripts/xboxapp.js" type="module"></script>
-    <script src="scripts/xboxbrowser.js" type="module"></script>
-    <script src="scripts/xboxsearch.js" type="module"></script>
+	<title>Xbox Launcher v1.0</title>
+	<script src="scripts/common.js" type="module"></script>
+	<script src="scripts/googlesearch.js" type="module"></script>
+	<script src="scripts/gamename.js" type="module"></script>
+	<script src="scripts/msstore.js" type="module"></script>
+	<script src="scripts/xboxapp.js" type="module"></script>
+	<script src="scripts/xboxbrowser.js" type="module"></script>
+	<script src="scripts/xboxsearch.js" type="module"></script>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			background-color: #f9f9f9;
+			margin: 0;
+			padding: 0;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+		h1 {
+			color: #333;
+			margin-top: 20px;
+		}
+		textarea {
+			width: 300px;
+			height: 40px;
+			background: transparent;
+			border: 1px solid white;
+			border-radius: 2px;
+			margin-bottom: 25px;
+			resize: vertical;
+		}
+		.contact__form-textarea {
+			height: 150px;
+		}
+		label {
+			width: 180px;
+			display: inline-block;
+			vertical-align: top;
+		}
+		button {
+			margin: 10px auto;
+			padding: 10px 20px;
+			background-color: #f2f3f5;
+			color: #000; /* Black text color */
+			border: 1px solid #000; /* Black border */
+			border-radius: 5px;
+			cursor: pointer;
+			transition: background-color 0.3s ease; /* Smooth transition on hover */
+		}
+		button:hover {
+			background-color: #ccc; /* Light gray on hover */
+		}
+		button:active {
+			background-color: #bbb; /* Slightly darker gray when clicked */
+		}
+	</style>
 </head>
 <body>
-    <div style="text-align: center;">
-        <h1 id="name">Name</h1>
-        <hr />
-        <h2>Info:</h2>
-        <h2 id="found_pid">PID: Not Found</h2>
-        <h2 id="found_name">Name: Not Found</h2>
-        <hr />
-        <h2>Open with:</h2>
-        <br />
-        <button id="xboxappbutton">Xbox App</button>
-        <button id="msstorebutton">Microsoft Store</button>
-        <button id="xboxbrowserbutton">Browser (Store Page)</button>
-        <button id="xboxsearchbutton">Browser (Search on Xbox website)</button>
-        <button id="googlesearchbutton">Browser (Search on Google)</button>
-        <br />
-        <br />
-        <hr />
-        <h2>Shortcuts:</h2>
-        <br />
-        <a href="msxbox://library"><button>Your Library (Xbox App)</button></a>
-        <br />
-        <br />
-        <a href="msxbox://xcloud"><button>Xbox Cloud Gaming / "xCloud" (Xbox App)</button></a>
-        <br />
-        <br />
-        <a href="msxbox://store"><button>Store (Xbox App)</button></a>
-        <br />
-        <br />
-        <a href="msxbox://settings"><button>Settings (Xbox App)</button></a>
-        <br />
-        <br />
-        <a href="msxbox://perksgallery/"><button>Xbox Game Pass Ultimate Perks (Xbox App)</button></a>
-        <br />
-        <br />
-        <a href="msxbox://installs"><button>Installation Queue (Xbox App)</button></a>
-        <br />
-        <br />
-        <hr />
-        <h2>Made by XboxFocus</h2>
-        <h2><a href="https://github.com/XboxFocus">GitHub Profile</a> -- <a href="https://xboxfocus.github.io">Our Website</a> -- <a href="https://docs.google.com/spreadsheets/d/1pnX3puJVTR3qa7FjUfEYl1F3jH2eMICwxeBpESdzt6I/edit#gid=0">Xbox Play Anywhere list</a> -- <a href="https://t.me/+WRRovH_Lg8VhNDA0">Telegram (🇮🇹)</a></h2>
-        <h3>Disclaimer:</h3>
-        <h3>XboxFocus is not affiliated nor associated with Xbox, GitHub, Google, Alphabet, Microsoft or any of their subsidiaries. Proceed at your own risk.</h3>
-    </div>
+	<div style="text-align: center;">
+		<h1 id="name">(Name)</h1>
+		<hr />
+		<h2>Info:</h2>
+		<h2 id="found_pid">PID: Not Found</h2>
+		<h2 id="found_name">Name: Not Found</h2>
+		<hr />
+		<h2>Open with:</h2>
+		<br />
+		<button id="xboxappbutton">Xbox App</button>
+		<button id="msstorebutton">Microsoft Store</button>
+		<button id="xboxbrowserbutton">Browser (Store Page)</button>
+		<button id="xboxsearchbutton">Browser (Search on Xbox website)</button>
+		<button id="googlesearchbutton">Browser (Search on Google)</button>
+		<br />
+		<br />
+		<hr />
+		<h2>Shortcuts:</h2>
+		<br />
+		<a href="msxbox://library"><button>Your Library (Xbox App)</button></a>
+		<br />
+		<br />
+		<a href="msxbox://xcloud"><button>Xbox Cloud Gaming / "xCloud" (Xbox App)</button></a>
+		<br />
+		<br />
+		<a href="msxbox://store"><button>Store (Xbox App)</button></a>
+		<br />
+		<br />
+		<a href="msxbox://settings"><button>Settings (Xbox App)</button></a>
+		<br />
+		<br />
+		<a href="msxbox://perksgallery/"><button>Xbox Game Pass Ultimate Perks (Xbox App)</button></a>
+		<br />
+		<br />
+		<a href="msxbox://installs"><button>Installation Queue (Xbox App)</button></a>
+		<br />
+		<br />
+		<hr />
+		<h2>Made by XboxFocus</h2>
+		<h2><a href="https://github.com/XboxFocus">GitHub Profile</a> -- <a href="https://xboxfocus.github.io">Our Website</a> -- <a href="https://docs.google.com/spreadsheets/d/1pnX3puJVTR3qa7FjUfEYl1F3jH2eMICwxeBpESdzt6I/edit#gid=0">Xbox Play Anywhere list</a> -- <a href="https://t.me/+WRRovH_Lg8VhNDA0">Telegram (🇮🇹)</a></h2>
+		<h3>Disclaimer:</h3>
+		<h3>XboxFocus is not affiliated nor associated with Xbox, GitHub, Google, Alphabet, Microsoft or any of their subsidiaries. Proceed at your own risk.</h3>
+	</div>
 </body>
 </html>
