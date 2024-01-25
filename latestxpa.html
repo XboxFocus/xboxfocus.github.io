@@ -63,7 +63,7 @@
                 document.title = "Latest XPA Games -- Page " + (parseInt(page));
         const data = xhr.responseText.split("\n");
         for (let i = 0; i < max_in_page; i++) {
-                  let it = ((parseInt(page)) * 30) + i;
+                  let it = ((parseInt(page)) * max_in_page) + i;
                   if (it < data.length) {
                           const entryData = data[it].split("|");
                           if (entryData.length === 3) {
@@ -94,7 +94,7 @@
                 container.style.alignItems = 'center';
             container.style.textAlign = 'center';
                 let has_first_button = (parseInt(page)) > 0;
-                let has_second_button = data.length > (30*((parseInt(page)) + 1));
+                let has_second_button = data.length > (max_in_page*((parseInt(page)) + 1));
                 if (has_first_button || has_second_button) {
                         const heading = document.createElement('h3');
                         heading.textContent = 'Buttons';
