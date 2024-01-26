@@ -61,7 +61,8 @@
                 }
                 let max_in_page = 32;
                 document.title = "Latest XPA Games -- Page " + (parseInt(page));
-        const data = xhr.responseText.split("\n");
+        let data = xhr.responseText.split("\n");
+        data.reverse();
         for (let i = 0; i < max_in_page; i++) {
                   let it = ((parseInt(page)) * max_in_page) + i;
                   if (it < data.length) {
