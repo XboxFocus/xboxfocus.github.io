@@ -3,3 +3,4 @@ Brotato|9P9VNSQK1W3K|https://store-images.s-microsoft.com/image/apps.39516.14130
 Power Racing Bundle|9MXGK8PB8CXB|https://store-images.s-microsoft.com/image/apps.46735.13890674412715097.aedd985f-d081-44ad-bf6f-959ab24fb5d9.e50e0503-dc7d-4432-93d5-c0f5f3f3ab95
 while True: learn()|9NRPGJZQRP2M|https://store-images.s-microsoft.com/image/apps.49826.14378884201378508.01c0dcc7-d4d2-4682-b126-f73dbf895aea.032dc0b1-f3c0-4bf4-8cac-3c0ed0c400dc
 Like a Dragon: Infinite Wealth Deluxe Edition|9PFQFHCJQPT0|https://store-images.s-microsoft.com/image/apps.6805.14200335796701845.a25f3ad3-dffa-46ef-aff3-31b2a9bcf418.8ef80f38-48dc-4cb9-bd5d-3c91b61e3f8a
+Like a Dragon: Infinite Wealth Ultimate Edition|9P1F1PHQLZ8W|https://store-images.s-microsoft.com/image/apps.42764.14512824094744520.ce52c7db-a4f0-413b-b9ea-6b1faab438d3.9ea6d48d-a9d2-4685-a032-415691470a1a
