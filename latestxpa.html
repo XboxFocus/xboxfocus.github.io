@@ -60,7 +60,7 @@
                         page = "0";
                 }
                 let max_in_page = 32;
-                document.title = "Latest XPA Games -- Page " + (parseInt(page));
+                document.title = "Latest XPA Games -- Page " + (parseInt(page) + 1);
         let data = xhr.responseText.split("\n");
         data.reverse();
         for (let i = 0; i < max_in_page; i++) {
