@@ -22,3 +22,4 @@ Control:Override|9N73W1728BG8|https://store-images.s-microsoft.com/image/apps.32
 Anuchard|9NZ02XZD806L|https://store-images.s-microsoft.com/image/apps.56868.14490665772853953.a70de13a-b9d0-41e7-bac1-9ce697912658.b2a308a9-d7a0-4dfd-a1d8-a38bcef5b290
 Train Sim World® 4: Standard Edition|9PMC4B0FGVN5|https://store-images.s-microsoft.com/image/apps.48801.13941388656612317.39a529f9-f739-49cf-b8d9-80ba78c7d594.940bc27e-ff86-4b19-a657-0a78ad0c1a70
 Wo Long: Fallen Dynasty Complete Edition|9NZXN1T0MQMK|https://store-images.s-microsoft.com/image/apps.54964.14467214871427020.285a44f2-25fb-4fbb-9ed5-aecee51063b5.5912c9ab-0ba9-4806-85f0-ab9d70f04fbb
+Tenderfoot Tactics|9PC7M8CLSQTJ|https://store-images.s-microsoft.com/image/apps.48336.14178877696770993.e4927a37-d751-42a0-9661-3c3d7c87e3a1.95a382a2-c70b-4438-abc1-09eed8d2886f
