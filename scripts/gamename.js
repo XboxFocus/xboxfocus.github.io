@@ -7,5 +7,8 @@ if (gname != null && gname.length > 0) {
     const fpid = document.getElementById('found_name');
     fpid.textContent = "Name: Found (" + getActualName(gname) + ")";
 } else {
-    nametext.textContent = getActualPID(pid);
+    let newpid = getActualPID(pid);
+	if(newpid.length > 0) {
+		nametext.textContent = newpid;
+	}
 }

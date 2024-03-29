@@ -1,6 +1,6 @@
 export const urlParams = new URLSearchParams(window.location.search);
-export const pid = urlParams.get('pid').replace("/\n/g", "").trim();
-export const gname = urlParams.get('gname').replace("/\n/g", "").trim();
+export const pid = urlParams.get('pid')?.replace("/\n/g", "")?.trim();
+export const gname = urlParams.get('gname')?.replace("/\n/g", "")?.trim();
 
 export function getActualName(my_name) {
 
@@ -19,6 +19,9 @@ export function removeAfterSlash(str) {
 
 export function getActualPID(my_pid) {
 
+	if (my_pid == null) {
+		return "";
+	}
     return removeAfterSlash(my_pid);
 }
 
@@ -67,11 +70,11 @@ export async function getCachedData(pid) {
 export async function getCachedAppsFolderID(pid) {
     try {
         let cafid = await getCachedData(pid);
-        if (cafid.length > 3) {
+        if (cafid.length > 4) {
             let arr = cafid.split("|");
             let i = 0;
             for (const line of arr) {
-                if (i == 3) {
+                if (i == 4) {
                     return line;
                 }
                 i = i + 1;
@@ -87,11 +90,51 @@ export async function getCachedAppsFolderID(pid) {
 export async function getCachedGameExe(pid) {
     try {
         let cge = await getCachedData(pid);
-        if (cge.length > 4) {
+        if (cge.length > 5) {
             let arr = cge.split("|");
             let i = 0;
             for (const line of arr) {
-                if (i == 4) {
+                if (i == 5) {
+                    return line;
+                }
+                i = i + 1;
+            }
+        }
+        return "";
+    } catch (e) {
+        console.error(`Error in getCachedGameExe: ${e}`);
+        return "";
+    }
+}
+
+export async function getCachedGameVerticalImg(pid) {
+    try {
+        let cge = await getCachedData(pid);
+        if (cge.length > 2) {
+            let arr = cge.split("|");
+            let i = 0;
+            for (const line of arr) {
+                if (i == 2 && line.includes("https")) {
+                    return line;
+                }
+                i = i + 1;
+            }
+        }
+        return "";
+    } catch (e) {
+        console.error(`Error in getCachedGameExe: ${e}`);
+        return "";
+    }
+}
+
+export async function getCachedGameBackgroundImg(pid) {
+    try {
+        let cge = await getCachedData(pid);
+        if (cge.length > 3) {
+            let arr = cge.split("|");
+            let i = 0;
+            for (const line of arr) {
+                if (i == 3 && line.includes("https")) {
                     return line;
                 }
                 i = i + 1;
