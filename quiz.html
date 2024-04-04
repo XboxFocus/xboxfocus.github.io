@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Does it support Xbox Play Anywhere?</title>
+	<script src="scripts/quizcommon.js"></script>
+    <style>
+        body {
+			align-items: center;
+			place-items: center;
+		}
+		.mydiv {
+			text-align: center;
+			align-items: center;
+			place-items: center;
+			justify-content: center;
+			padding: 2px;
+		}
+		/* Style for the div with a border */
+        .bordered-div {
+            border: 1px solid #333; /* You can adjust the color and width as needed */
+            padding: 10px; /* Optional: Add some padding for spacing */
+			text-align: center;
+			align-items: center;
+			place-items: center;
+			justify-content: center;
+        }
+    </style>
+</head>
+<body>
+<div class="mydiv">
+    <h1>Does it support Xbox Play Anywhere?</h1>
+    <form id="quiz-form">
+		<div id="q1" class="bordered-div">
+        <p class="mydiv">Who is publishing the game?</p>
+        <textarea name="q1" rows="1" cols="50" placeholder="Enter your answer" class="mydiv"></textarea><br>
+		</div>
+		
+		<div id="q6" class="bordered-div">
+		<!-- Question 6 (displayed conditionally) -->
+        <p id="q6-question" style="display: none;" class="mydiv">Is it a Yakuza/Like a Dragon or a Persona/SMT/Metaphor game?</p>
+		<textarea name="q6" id="q6-answer" rows="1" cols="50" placeholder="Enter your answer" style="display: none;" class="mydiv"></textarea><br>
+		</div>
+		
+		<div id="q2" class="bordered-div">
+		<p class="mydiv">Was the game also announced for "Windows" (with the Windows logo)?</p>
+		<label><input type="radio" name="q2" value="0" for="" style="display: none; height: 0; width: 0;" class="mydiv"></label><br>
+		<label><input type="radio" name="q2" value="A" for="" class="mydiv">Yes</label><br>
+		<label><input type="radio" name="q2" value="B" for="" class="mydiv">No</label><br>
+		</div>
+		
+		<div id="q3" class="bordered-div">
+        <p class="mydiv">What year did the game come out/will the game come out?</p>
+        <input type="number" name="q3" placeholder="Enter your answer" class="mydiv"><br>
+		</div>
+		
+		<div id="q4" class="bordered-div">
+        <p>Is it visible in the Xbox app?</p>
+		<label><input type="radio" name="q4" value="0" for="" style="display: none; height: 0; width: 0;" class="mydiv"></label><br>
+        <label><input type="radio" name="q4" value="A" for="" class="mydiv">Yes</label><br>
+        <label><input type="radio" name="q4" value="B" for="" class="mydiv">No</label><br>
+		<label><input type="radio" name="q4" value="C" for="" class="mydiv">Can't check right now</label><br>
+		</div>
+		
+		<div id="q8" class="bordered-div">
+		<!-- Question 6 (displayed conditionally) -->
+        <p id="q8-question" style="display: none;" class="mydiv">Does the game have "Xbox"/"Console" or "Windows"/"Win"/"W10"/"W11"/"PC" in its name?</p>
+		<textarea name="q8" id="q8-answer" rows="1" cols="50" placeholder="Enter your answer" style="display: none;" class="mydiv"></textarea><br>
+		</div>
+		
+		<div id="q5" class="bordered-div">
+		<p class="mydiv">Does the preorder page mention "Xbox Play Anywhere" or both Xbox and PC in the devices (hoping it's not a mistake)?</p>
+		<label><input type="radio" name="q5" value="0" for="" style="display: none; height: 0; width: 0;" class="mydiv"></label><br>
+        <label><input type="radio" name="q5" value="A" for="" class="mydiv">Yes</label><br>
+        <label><input type="radio" name="q5" value="B" for="" class="mydiv">No</label><br>
+		<label><input type="radio" name="q5" value="C" for="" class="mydiv">There's no preorder page yet</label><br>
+		</div>
+		
+		<div id="q7" class="bordered-div">
+		<p class="mydiv">Was the game announced for Game Pass?</p>
+		<label><input type="radio" name="q7" value="0" for="" style="display: none; height: 0; width: 0;" class="mydiv"></label><br>
+        <label><input type="radio" name="q7" value="A" for="" class="mydiv">Yes</label><br>
+        <label><input type="radio" name="q7" value="B" for="" class="mydiv">No</label><br>
+		</div>
+		
+        <!-- Add more questions here if needed -->
+    </form>
+	
+	<br>
+	<button type="button" id="submit-button" onclick="calculateResult()" class="mydiv" style="display: none;">Submit</button>
+	<button type="button" id="calculate-button" class="mydiv" onclick="checkAnswer()">Calculate</button>
+	<button type="button" class="mydiv" onclick="doreset()">Reset</button>
+
+    <div id="result"></div>
+
+    <script>
+	    // Initialize user answers
+        let userAnswers = {};
+		
+		// Define correct answers and their scores
+        const correctAnswers = {
+            q1: [
+				{ answer: "ea", score: -999 },
+				{ answer: "ubisoft", score: -999 },
+				{ answer: "xbox", score: 75 },
+				{ answer: "bethesda", score: 75 },
+				{ answer: "zenimax", score: 75 },
+				{ answer: "atlus", score: 75 },
+				{ answer: "sega", score: 45 },
+				{ answer: "bandai", score: 18 },
+				{ answer: "koei", score: 5 },
+				{ answer: "capcom", score: 10 }
+			],
+            q2: [
+                { answer: "a", score: 25 },
+            ],
+            q3: [
+				{ answer: "2017", score: 2 },
+				{ answer: "2018", score: 2 },
+				{ answer: "2019", score: 4 },
+				{ answer: "2020", score: 4 },
+				{ answer: "2021", score: 6 },
+				{ answer: "2022", score: 6 },
+				{ answer: "2023", score: 8 },
+				{ answer: "2024", score: 8 },
+				{ answer: "2025", score: 10 },
+				{ answer: "2026", score: 10 },
+				{ answer: "2027", score: 12 },
+				{ answer: "2028", score: 12 },
+				{ answer: "2029", score: 14 },
+				{ answer: "2030", score: 14 },
+			],
+            q4: { answer: "a", score: 12 },
+			q5: [
+				{ answer: "a", score: 9999 },
+				{ answer: "b", score: -15 }
+			],
+			q6: { answer: "yes", score: 80 },
+			q7: { answer: "a", score: 35 },
+			q8: { answer: "yes", score: -30 },
+            // Add more correct answers and scores here
+        };
+		
+		let remove_previous = true;
+		if (remove_previous) {
+			remove_previous = false;
+			doreset();
+			userAnswer = {};
+		}
+
+        // Function to check if the answer to Question 4 is not "B" (Green)
+        function checkAnswer() {
+		
+			const form = document.getElementById("quiz-form");
+			const formData = new FormData(form);
+			
+			const keysVector = [];
+
+			for (const entry of formData.entries()) {
+			  const key = entry[0];
+			  if(String(entry[1]).length > 0) {
+				keysVector.push(key);
+			  }
+			}
+			
+			let q1a = keysVector.includes('q1');
+			let q2a = keysVector.includes('q2');
+			let q3a = keysVector.includes('q3');
+            let q4v = enableDisableIfEqual("atlus", "q1", "q6");
+			let q4a = keysVector.includes('q4');
+			let q5a = keysVector.includes('q5');
+			let q6a = keysVector.includes('q6');
+			let q7a = keysVector.includes('q7');
+			let q8a = keysVector.includes('q8');
+			let q8v = enableDisableIfEqual("a", "q4", "q8");
+			
+			let can_submit = keysVector.length > 0;
+			
+			if (can_submit) {
+				document.getElementById("submit-button").style.display = "block";
+				document.getElementById("submit-button").style.justifyContent = "center"; // Center horizontally
+				document.getElementById("submit-button").style.alignItems = "center";
+				document.getElementById("submit-button").style.placeItems = "center";
+				document.getElementById("submit-button").style.margin = "auto"; // Center horizontally
+			} else {
+				document.getElementById("submit-button").style.display = "none";
+			}
+        }
+    </script>
+	</div>
+</body>
+</html>
