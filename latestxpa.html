@@ -56,86 +56,86 @@
     const xhr = new XMLHttpRequest();
     xhr.open("GET", "images_cache.txt");
     xhr.onreadystatechange = function() {
-      if (xhr.readyState === 4 && xhr.status === 200) {
+	if (xhr.readyState === 4 && xhr.status === 200) {
             let urlParams = new URLSearchParams(window.location.search);
-                let page = urlParams.get('page');
-                if (page == null) {
-                        page = "0";
-                }
-                let max_in_page = 32;
-                document.title = "Latest XPA Games -- Page " + (parseInt(page) + 1);
-        let data = xhr.responseText.split("\n");
-        data.reverse();
-        for (let i = 0; i < max_in_page; i++) {
-                  let it = ((parseInt(page)) * max_in_page) + i;
-                  if (it < data.length) {
-                          const entryData = data[it].split("|");
-                          if (entryData.length === 3) {
-                                const entry = document.createElement("div");
-                                entry.className = "entry";
-                                entry.onclick = function() {
-                                  window.open("https://xboxfocus.github.io?pid=" + entryData[1] + "&gname=" + entryData[0]);
-                                };
-                                const img = document.createElement("img");
-                                img.src = entryData[2] + "?q=90&w=177&h=265";
-                                const name = document.createElement("tid");
-                                name.textContent = entryData[1] + '\n';
-                                const titleId = document.createElement("titl");
-                                titleId.innerHTML = "<b>" + entryData[0] + "<\/b>";
-                                entry.appendChild(img);
-                                entry.appendChild(name);
-                                entry.appendChild(titleId);
-                                entries.appendChild(entry);
-                          }
-                        }
-                }
-                const button = document.createElement('button');
-                const back_button = document.createElement('button');
-                const footer = document.getElementById('footer');
-                const container = document.createElement('div');
-                container.style.display = 'wrap';
-                container.style.justifyContent = 'space-evenly';
-                container.style.alignItems = 'center';
-            container.style.textAlign = 'center';
-                let has_first_button = (parseInt(page)) > 0;
-                let has_second_button = data.length > (max_in_page*((parseInt(page)) + 1));
-                if (has_first_button || has_second_button) {
-                        const heading = document.createElement('h3');
-                        heading.textContent = 'Buttons';
-                        container.appendChild(heading);
-                        const lineBreak = document.createElement('br');
-                        container.appendChild(lineBreak);
-                }
-                if (has_first_button) {
-                        // TODO:
-                        // I don't know why, but if the text of the buttons
-                        // has different length, then the buttons won't
-                        // be perfectly centered
-                        back_button.innerHTML = '<-- Page';
-                        back_button.onclick = function() {
-                                const newUrl = window.location.href.split('?')[0] + '?page=' + ((parseInt(urlParams.get('page')) || 0) - 1);
-                                window.location.href = newUrl;
-                        };
-                        container.appendChild(back_button)
-                }
-                if (has_second_button) {
-                  if(has_first_button) {
-                    for(let k = 0; k < 6; k++) {
-                                container.appendChild(document.createTextNode('\u00A0'));
-                        }
-                  }
-                  // TODO:
-                  // I don't know why, but if the text of the buttons
-                  // has different length, then the buttons won't
-                  // be perfectly centered
-                  button.innerHTML = '--> Page';
-                  button.onclick = function() {
-                        const newUrl = window.location.href.split('?')[0] + '?page=' + ((parseInt(urlParams.get('page')) || 0)  + 1);
-                        window.location.href = newUrl;
-                  };
-                  container.appendChild(button);
-                }
-                footer.appendChild(container);
+            let page = urlParams.get('page');
+            if (page == null) {
+                    page = "0";
+            }
+            let max_in_page = 32;
+            document.title = "Latest XPA Games -- Page " + (parseInt(page) + 1);
+			let data = xhr.responseText.split("\n");
+			data.reverse();
+			for (let i = 0; i < max_in_page; i++) {
+				let it = ((parseInt(page)) * max_in_page) + i;
+				if (it < data.length) {
+					const entryData = data[it].split("|");
+					if (entryData.length === 3) {
+						const entry = document.createElement("div");
+						entry.className = "entry";
+						entry.onclick = function() {
+							window.open("https://xboxfocus.github.io?pid=" + entryData[1] + "&gname=" + entryData[0]);
+						};
+						const img = document.createElement("img");
+						img.src = entryData[2] + "?q=90&w=177&h=265";
+						const name = document.createElement("tid");
+						name.textContent = entryData[1] + '\n';
+						const titleId = document.createElement("titl");
+						titleId.innerHTML = "<b>" + entryData[0] + "<\/b>";
+						entry.appendChild(img);
+						entry.appendChild(name);
+						entry.appendChild(titleId);
+						entries.appendChild(entry);
+					}
+				}
+			}
+            const button = document.createElement('button');
+            const back_button = document.createElement('button');
+			const footer = document.getElementById('footer');
+            const container = document.createElement('div');
+            container.style.display = 'wrap';
+            container.style.justifyContent = 'space-evenly';
+			container.style.alignItems = 'center';
+			container.style.textAlign = 'center';
+			let has_first_button = (parseInt(page)) > 0;
+			let has_second_button = data.length > (max_in_page*((parseInt(page)) + 1));
+			if (has_first_button || has_second_button) {
+				const heading = document.createElement('h3');
+				heading.textContent = 'Buttons';
+				container.appendChild(heading);
+				const lineBreak = document.createElement('br');
+				container.appendChild(lineBreak);
+			}
+			if (has_first_button) {
+				// TODO:
+				// I don't know why, but if the text of the buttons
+				// has different length, then the buttons won't
+				// be perfectly centered
+				back_button.innerHTML = '<-- Page';
+				back_button.onclick = function() {
+					const newUrl = window.location.href.split('?')[0] + '?page=' + ((parseInt(urlParams.get('page')) || 0) - 1);
+					window.location.href = newUrl;
+                };
+				container.appendChild(back_button)
+            }
+            if (has_second_button) {
+				if(has_first_button) {
+					for(let k = 0; k < 6; k++) {
+                        container.appendChild(document.createTextNode('\u00A0'));
+                    }
+				}
+				// TODO:
+				// I don't know why, but if the text of the buttons
+				// has different length, then the buttons won't
+				// be perfectly centered
+				button.innerHTML = '--> Page';
+				button.onclick = function() {
+                    const newUrl = window.location.href.split('?')[0] + '?page=' + ((parseInt(urlParams.get('page')) || 0)  + 1);
+                    window.location.href = newUrl;
+				};
+				container.appendChild(button);
+            }
+            footer.appendChild(container);
       }
     };
     xhr.send();
