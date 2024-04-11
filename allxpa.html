@@ -1,69 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<script src="scripts/sheets.js" type="module"></script>
-	<title>All XPA Games</title>
-	<style>
-		.container {
-			 display: flex;
-			 flex-wrap: wrap;
-			 justify-content: center;
-			 align-items: center;
-			 text-align: center;
-			 white-space: pre-wrap;
-		}
-		 .entry {
-			 text-align: center;
-			 margin: 10px;
-			 cursor: pointer;
-			 max-width: 200px;
-			 min-height: 380px;
-			 white-space: pre-wrap;
-		}
-		 .entry img {
-			 max-width: 177px;
-			 min-width: 177px;
-			 height: 100%;
-			 min-height: 265px;
-			 max-height: 265px;
-		}
-		 .entry tid {
-			 text-align: center;
-			 margin: 10px;
-			 width: 80%;
-			 height: 100%;
-			 white-space: pre-wrap;
-		}
-		 .entry titl {
-			 text-align: center;
-			 margin: 10px;
-			 width: 80%;
-			 height: 100%;
-			 white-space: pre-wrap;
-		}
-		 #loading-text {
-			 justify-content: center;
-			 align-items: center;
-			 text-align: center;
-			 font-size: 24px;
-			 color: #333;
-		}
-	</style>
-</head>
-<body>
-	<br>
-	<div style="text-align: center;">
-    <h2>All XPA Games -- xboxfocus.github.io</h2>
-	<h2 id="loading-text">Loading...</h2>
-	</div><br>
-	<hr>
-	<br>
-	<div class="container" id="entries"></div>
-	<br>
-	<hr>
-	<br>
-  <footer id="footer"></footer>
-</body>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<script src="scripts/sheets.js" type="module"></script>
+		<title>All XPA Games</title>
+		<style>
+			.container {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
+			align-items: center;
+			text-align: center;
+			white-space: pre-wrap;
+			}
+			.entry {
+			text-align: center;
+			margin: 10px;
+			cursor: pointer;
+			max-width: 200px;
+			min-height: 380px;
+			white-space: pre-wrap;
+			}
+			.entry img {
+			max-width: 177px;
+			min-width: 177px;
+			height: 100%;
+			min-height: 265px;
+			max-height: 265px;
+			}
+			.entry tid {
+			text-align: center;
+			margin: 10px;
+			width: 80%;
+			height: 100%;
+			white-space: pre-wrap;
+			}
+			.entry titl {
+			text-align: center;
+			margin: 10px;
+			width: 80%;
+			height: 100%;
+			white-space: pre-wrap;
+			}
+			#loading-text {
+			justify-content: center;
+			align-items: center;
+			text-align: center;
+			font-size: 24px;
+			color: #333;
+			}
+			#myTextInput {
+			display: none;
+			text-align: center;
+			vertical-align: middle; /* Align vertically with the dropdown */
+			}
+		</style>
+	</head>
+	<body>
+		<br>
+		<div style="text-align: center;">
+			<h2>All XPA Games -- xboxfocus.github.io</h2>
+			<h2 id="loading-text">Loading...</h2>
+		</div>
+		<div style="text-align: right; margin-right: 5%;">
+			<label for="myDropdown">Filter:</label>
+			<select id="myDropdown">
+				<option value="OAAZ">Order alphabetically (A-Z)</option>
+				<option value="OAZA">Order alphabetically (Z-A)</option>
+				<option value="DEV">Select developer</option>
+				<option value="PUB">Select publisher</option>
+			</select>
+			<input type="text" id="myTextInput" placeholder="Enter text">
+		</div>
+		<br>
+		<hr>
+		<br>
+		<div class="container" id="entries"></div>
+		<br>
+		<hr>
+		<br>
+		<footer id="footer"></footer>
+	</body>
 </html>

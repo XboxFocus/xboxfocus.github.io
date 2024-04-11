@@ -201,9 +201,24 @@ async function ExtractSheetsData(csvData) {
 	return games;
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-	
+function ResetFilters() {
+
+	document.getElementById("myDropdown").value = "";
+
+	ResetText();
+}
+
+function ResetText() {
+
+	const text = document.getElementById('myTextInput');
+	text.style.display = "none";
+}
+
+async function RefreshList(drawbuttons) {
+
 	const exportURL = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQNMfFCzh3cr1wjEgojbLDBqApRz_uUe1Xrn8G7z3gWbpAxqMQl2NuJ9HhAfrVm4pP-voybGg5xSYhX/pubhtml?gid=0&single=true`;
+	document.getElementById("entries");
+	entries.innerHTML = ""; // Clear all child elements
 
 	// Make an HTTP request
 	const xhr = new XMLHttpRequest();
@@ -221,51 +236,112 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 			let urlParams = new URLSearchParams(window.location.search);
 			let page = urlParams.get('page');
+			let dfilt = urlParams.get('filter');
+			let dtext = urlParams.get('text');
+			const dtext_url_value = dtext == null ? "" : dtext;
 			if (page == null) {
 				page = "0";
 			}
+			if (dfilt == null) {
+				dfilt = "OAAZ";
+			}
+			if (dtext == null) {
+				dtext = "";
+			}
+
+			const dropdown = document.getElementById("myDropdown");
+			const textInput = document.getElementById("myTextInput");
+
+			if (dropdown.value.length > 0 && urlParams.get('filter') != null) {
+				dfilt = dropdown.value;
+			}
+
+			if (textInput.value.length > 0 && urlParams.get('text') != null) {
+				dtext = textInput.value;
+			}
+
+			switch (dfilt) {
+				case 'OAZA':
+					data = data.reverse();
+					break;
+				case 'DEV':
+					if (dtext.trim().length > 0) {
+						data = data.filter(item => item.Developer.toLowerCase().includes(dtext.toLowerCase()));
+					}
+					break;
+				case 'PUB':
+					if (dtext.trim().length > 0) {
+						data = data.filter(item => item.Publisher.toLowerCase().includes(dtext.toLowerCase()));
+					}
+					break;
+				default:
+					break;
+			}
+
 			let max_in_page = 32;
 			document.title = "All XPA Games -- Page " + (parseInt(page) + 1);
 			for (let i = 0; i < max_in_page; i++) {
 				let it = ((parseInt(page)) * max_in_page) + i;
-				if (it < data.length) {
-					const entryData = data[it];
-					//console.log(entryData.Name);
+				if (data.length > 0) {
+					if (it < data.length) {
 
-					let mypid = getActualPID(entryData.PID);
-					let noid = mypid.length <= 0;
+						const entryData = data[it];
+						//console.log(entryData.Name);
 
-					//console.log("pid: " + mypid);
-					let vertical_img = "";
+						let mypid = getActualPID(entryData.PID);
+						let noid = mypid.length <= 0;
 
-					if (!noid) {
-						vertical_img = await getCachedGameVerticalImg(mypid);
+						//console.log("pid: " + mypid);
+						let vertical_img = "";
+
+						if (!noid) {
+							vertical_img = await getCachedGameVerticalImg(mypid);
+						}
+						if (vertical_img.length == 0) {
+							vertical_img = "unknown.png";
+						}
+
+						const entry = document.createElement("div");
+						entry.className = "entry";
+						entry.onclick = function() {
+							window.open("https://xboxfocus.github.io?pid=" + mypid + "&gname=" + entryData.Name);
+						};
+						const img = document.createElement("img");
+
+						img.src = vertical_img.includes("unknown.png") ? vertical_img : vertical_img + "?q=90&w=177&h=265";
+						const name = document.createElement("tid");
+						name.textContent = mypid + '\n';
+						const titleId = document.createElement("titl");
+						titleId.innerHTML = "<b>" + entryData.Name + "<\/b>";
+						entry.appendChild(img);
+						entry.appendChild(name);
+						entry.appendChild(titleId);
+						entries.appendChild(entry);
 					}
-					if (vertical_img.length == 0) {
-						vertical_img = "unknown.png";
-					}
-
+				} else {
 					const entry = document.createElement("div");
 					entry.className = "entry";
 					entry.onclick = function() {
-						window.open("https://xboxfocus.github.io?pid=" + mypid + "&gname=" + entryData.Name);
+						window.location.href = "https://xboxfocus.github.io/allxpa";
 					};
 					const img = document.createElement("img");
-
-					img.src = vertical_img.includes("unknown.png") ? vertical_img : vertical_img + "?q=90&w=177&h=265";
+					img.src = "none.png";
 					const name = document.createElement("tid");
-					name.textContent = mypid + '\n';
+					name.textContent = "Reset Filters" + '\n';
 					const titleId = document.createElement("titl");
-					titleId.innerHTML = "<b>" + entryData.Name + "<\/b>";
+					titleId.innerHTML = "<b>Click me<\/b>";
 					entry.appendChild(img);
 					entry.appendChild(name);
 					entry.appendChild(titleId);
 					entries.appendChild(entry);
+					break;
 				}
 			}
+
 			const button = document.createElement('button');
 			const back_button = document.createElement('button');
 			const footer = document.getElementById('footer');
+			footer.innerHTML = "";
 			const container = document.createElement('div');
 			container.style.display = 'wrap';
 			container.style.justifyContent = 'space-evenly';
@@ -287,8 +363,20 @@ document.addEventListener('DOMContentLoaded', async () => {
 				// be perfectly centered
 				back_button.innerHTML = '<-- Page';
 				back_button.onclick = function() {
-					const newUrl = window.location.href.split('?')[0] + '?page=' + ((parseInt(urlParams.get('page')) || 0) - 1);
-					window.location.href = newUrl;
+					if (textInput.value.length > 0 || (dropdown.value != "DEV" && dropdown.value != "PUB")) {
+						if (dtext_url_value.length > 0 && dtext_url_value == textInput.value) {
+							const newUrl = window.location.href.split('?')[0] + '?page=' + ((parseInt(urlParams.get('page')) || 0) - 1) + "&filter=" + (dropdown.value.length > 0 ? dropdown.value : "OAAZ") + "&text=" + textInput.value;
+							window.location.href = newUrl;
+						} else {
+							if ((dropdown.value == "DEV" || dropdown.value == "PUB")) {
+								const newUrl = window.location.href.split('?')[0] + '?page=' + ((parseInt(urlParams.get('page')) || 0) - 1);
+								window.location.href = newUrl;
+							} else {
+								const newUrl = window.location.href.split('?')[0] + '?page=' + ((parseInt(urlParams.get('page')) || 0) - 1) + "&filter=" + (dropdown.value.length > 0 ? dropdown.value : "OAAZ");
+								window.location.href = newUrl;
+							}
+						}
+					}
 				};
 				container.appendChild(back_button)
 			}
@@ -304,8 +392,20 @@ document.addEventListener('DOMContentLoaded', async () => {
 				// be perfectly centered
 				button.innerHTML = '--> Page';
 				button.onclick = function() {
-					const newUrl = window.location.href.split('?')[0] + '?page=' + ((parseInt(urlParams.get('page')) || 0) + 1);
-					window.location.href = newUrl;
+					if (textInput.value.length > 0 || (dropdown.value != "DEV" && dropdown.value != "PUB")) {
+						if (dtext_url_value.length > 0 && dtext_url_value == textInput.value) {
+							const newUrl = window.location.href.split('?')[0] + '?page=' + ((parseInt(urlParams.get('page')) || 0) + 1) + "&filter=" + (dropdown.value.length > 0 ? dropdown.value : "OAAZ") + "&text=" + textInput.value;
+							window.location.href = newUrl;
+						} else {
+							if ((dropdown.value == "DEV" || dropdown.value == "PUB")) {
+								const newUrl = window.location.href.split('?')[0] + '?page=' + ((parseInt(urlParams.get('page')) || 0) + 1);
+								window.location.href = newUrl;
+							} else {
+								const newUrl = window.location.href.split('?')[0] + '?page=' + ((parseInt(urlParams.get('page')) || 0) + 1) + "&filter=" + (dropdown.value.length > 0 ? dropdown.value : "OAAZ");
+								window.location.href = newUrl;
+							}
+						}
+					}
 				};
 				container.appendChild(button);
 			}
@@ -315,4 +415,61 @@ document.addEventListener('DOMContentLoaded', async () => {
 		}
 	};
 	xhr.send();
+}
+
+async function handleSelection() {
+	const dropdown = document.getElementById("myDropdown");
+	const textInput = document.getElementById("myTextInput");
+	textInput.removeEventListener("keydown", handleEnterKey);
+	textInput.value = ""; // Reset the input value
+	switch (dropdown.value) {
+		case "DEV":
+		case "PUB":
+			textInput.style.display = "inline-block";
+			textInput.addEventListener("keydown", handleEnterKey);
+			break;
+		default:
+			textInput.style.display = "none";
+			const newUrl = window.location.href.split('?')[0] + "?page=0&filter=" + (dropdown.value.length > 0 ? dropdown.value : "OAAZ");
+			window.location.href = newUrl;
+			break;
+	}
+}
+
+function handleEnterKey(event) {
+	if (event.key === "Enter" && event.target.value.trim().length > 0) {
+		// Perform your desired action here
+		const dropdown = document.getElementById("myDropdown");
+		const newUrl = window.location.href.split('?')[0] + "?page=0&filter=" + (dropdown.value.length > 0 ? dropdown.value : "OAAZ") + "&text=" + event.target.value;
+		window.location.href = newUrl;
+	}
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+
+	ResetFilters();
+
+	const dropdown = document.getElementById("myDropdown");
+	const textInput = document.getElementById("myTextInput");
+	let urlParams = new URLSearchParams(window.location.search);
+	let dfilt = urlParams.get('filter');
+	if (dfilt != null && dfilt.length > 0) {
+		dropdown.value = dfilt;
+	}
+	textInput.removeEventListener("keydown", handleEnterKey);
+	switch (dropdown.value) {
+		case "DEV":
+		case "PUB":
+			textInput.style.display = "inline-block";
+			textInput.addEventListener("keydown", handleEnterKey);
+			break;
+	}
+	let dtext = urlParams.get('text');
+	if (dtext != null && dtext.length > 0) {
+		textInput.value = dtext;
+	}
+
+	await RefreshList();
+
+	document.getElementById("myDropdown").onchange = handleSelection;
 });
