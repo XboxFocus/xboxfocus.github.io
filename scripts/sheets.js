@@ -313,6 +313,19 @@ async function RefreshList(drawbuttons) {
 						name.textContent = mypid + '\n';
 						const titleId = document.createElement("titl");
 						titleId.innerHTML = "<b>" + entryData.Name + "<\/b>";
+						
+						//console.log("XGP: " + entryData.XGP + " for " + entryData.Name);
+						switch(entryData.XGP) {
+							case 'Yes':
+								name.style.border = "2px solid chartreuse";
+								break;
+							case 'Soon':
+								name.style.border = "2px solid gold";
+								break;
+							default:
+								break;
+						}
+						
 						entry.appendChild(img);
 						entry.appendChild(name);
 						entry.appendChild(titleId);

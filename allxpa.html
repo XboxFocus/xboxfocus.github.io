@@ -15,12 +15,19 @@
 			white-space: pre-wrap;
 			}
 			.entry {
+			display: block;
 			text-align: center;
-			margin: 10px;
+			margin: auto;
+			margin-left: 20px;
+			margin-right: 20px;
+			padding: auto;
 			cursor: pointer;
-			max-width: 200px;
+			min-width: 177px;
+			max-width: 177px;
 			min-height: 380px;
+			max-height: 380px;
 			white-space: pre-wrap;
+			overflow: clip;
 			}
 			.entry img {
 			max-width: 177px;
@@ -30,18 +37,28 @@
 			max-height: 265px;
 			}
 			.entry tid {
+			display: block;
+			align-items: center;
+			justify-content: center;
 			text-align: center;
-			margin: 10px;
-			width: 80%;
-			height: 100%;
+			margin: auto;
 			white-space: pre-wrap;
+			border: 2px solid gray;
+			padding: auto;
+			max-width: 177px;
+			max-height: 265px;
+			overflow: clip;
 			}
 			.entry titl {
+			display: block;
+			align-items: center;
+			justify-content: center;
 			text-align: center;
-			margin: 10px;
-			width: 80%;
-			height: 100%;
+			margin: auto;
 			white-space: pre-wrap;
+			max-width: 177px;
+			max-height: 265px;
+			overflow: clip;
 			}
 			#loading-text {
 			justify-content: center;
@@ -77,7 +94,6 @@
 		<hr>
 		<br>
 		<div class="container" id="entries"></div>
-		<br>
 		<hr>
 		<br>
 		<footer id="footer"></footer>
