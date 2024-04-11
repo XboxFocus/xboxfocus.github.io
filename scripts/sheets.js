@@ -214,6 +214,16 @@ function ResetText() {
 	text.style.display = "none";
 }
 
+function removeNonAlphanumeric(inputString) {
+	
+    return inputString.replace(/[^a-zA-Z0-9]/g, '');
+}
+
+function containsOnlyDigits(inputString) {
+	
+    return /^[0-9]+$/.test(inputString);
+}
+
 async function RefreshList(drawbuttons) {
 
 	const exportURL = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQNMfFCzh3cr1wjEgojbLDBqApRz_uUe1Xrn8G7z3gWbpAxqMQl2NuJ9HhAfrVm4pP-voybGg5xSYhX/pubhtml?gid=0&single=true`;
@@ -273,6 +283,117 @@ async function RefreshList(drawbuttons) {
 					if (dtext.trim().length > 0) {
 						data = data.filter(item => item.Publisher.toLowerCase().includes(dtext.toLowerCase()));
 					}
+					break;
+				case 'XGP':
+					data = data.filter(item => item.XGP.toLowerCase() == "yes" || item.XGP.toLowerCase() == "soon");
+					break;
+				case 'CGP':
+					data = data.filter(item => item.XGP.toLowerCase() == "soon");
+					break;
+				case 'NoGP':
+					data = data.filter(item => item.XGP.toLowerCase() != "yes" && item.XGP.toLowerCase() != "soon");
+					break;
+				case 'YPA':
+					data = data.filter(item => item.PCApp.toLowerCase() == "yes");
+					break;
+				case 'NPA':
+					data = data.filter(item => item.PCApp.toLowerCase() == "no");
+					break;
+				case 'XOne':
+					data = data.filter(item => item.Generation.toLowerCase() == "one");
+					break;
+				case 'OXOX':
+					data = data.filter(item => item.Features.toLowerCase().includes("x1x"));
+					break;
+				case 'OXSX':
+					data = data.filter(item => item.Features.toLowerCase().includes("xsx"));
+					break;
+				case 'XSX':
+					data = data.filter(item => item.Generation.toLowerCase() == "x|s");
+					break;
+				case 'TY':
+					const currentYear = new Date().getFullYear();
+					data = data.filter(item => item.Date.includes(currentYear));
+					break;
+				case 'LIY':
+					data = data.filter(item => {
+						
+						if(item.Date.split("/").length == 3) {
+							const [day, month, year] = item.Date.split("/");
+							const jsDate = new Date(year, month - 1, day);
+							const today = new Date(); // Get today's date
+
+							// Compare the item's date with today
+							return jsDate >= today;
+						} else {
+							const currentYear = new Date().getFullYear();
+							if(item.Date == currentYear) {
+								return true;
+							}
+						}
+						return false;
+					});
+					break;
+				case 'EXC':
+					data = data.filter(item => item.Exclusive.toLowerCase() == "yes");
+					break;
+				case '4K':
+					data = data.filter(item => item.Features.toLowerCase().includes("4k"));
+					break;
+				case 'SD':
+					data = data.sort((a, b) => removeNonAlphanumeric(a.Developer.trim().normalize().toLowerCase()).localeCompare(removeNonAlphanumeric(b.Developer.trim().normalize().toLowerCase())));
+					break;
+				case 'SP':
+					data = data.sort((a, b) => removeNonAlphanumeric(a.Publisher.trim().normalize().toLowerCase()).localeCompare(removeNonAlphanumeric(b.Publisher.trim().normalize().toLowerCase())));
+					break;
+				case 'SRD':
+					data = data.sort((a, b) => {
+						if(a.Date.split("/").length == 3 && b.Date.split("/").length == 3) {
+							const [aday, amonth, ayear] = a.Date.split("/");
+							const ajsDate = new Date(ayear, amonth - 1, aday);
+							
+							const [bday, bmonth, byear] = b.Date.split("/");
+							const bjsDate = new Date(byear, bmonth - 1, bday);
+
+							// Compare the item's date with today
+							return ajsDate >= bjsDate;
+						} else {
+							let asplit = a.Date.split("/").length;
+							let bsplit = b.Date.split("/").length;
+							if((asplit == 0 || bsplit == 0) && asplit != 1 && asplit != 2 && asplit <= 3 && bsplit != 1 && bsplit != 2 && bsplit <= 3) {
+								let newa = a.Date;
+								let newb = b.Date;
+								if(a.Date.split("/").length == 0) {
+									let only_numbers = containsOnlyDigits(a.Date);
+									if(!only_numbers || a.Date.length != 4) {
+										return false;
+									}
+									newa = "01/01/" + a.Date;
+								}
+								if(b.Date.split("/").length == 0) {
+									let only_numbers = containsOnlyDigits(b.Date);
+									if(!only_numbers || b.Date.length != 4) {
+										return true;
+									}
+									newb = "01/01/" + b.Date;
+								}
+								
+								if(newa.length == 0 || newb.length == 0) {
+									return false;
+								}
+								
+								const [aday, amonth, ayear] = newa.split("/");
+								const ajsDate = new Date(ayear, amonth - 1, aday);
+								
+								const [bday, bmonth, byear] = newb.split("/");
+								const bjsDate = new Date(byear, bmonth - 1, bday);
+
+								// Compare the item's date with today
+								return ajsDate >= bjsDate;
+							}
+							return false;
+						}
+					});
 					break;
 				default:
 					break;
