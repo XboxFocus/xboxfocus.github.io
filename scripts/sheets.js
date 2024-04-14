@@ -399,7 +399,8 @@ async function RefreshList(drawbuttons) {
 					break;
 			}
 
-			let max_in_page = 32;
+			let max_in_page = 256;
+			
 			document.title = "All XPA Games -- Page " + (parseInt(page) + 1);
 			for (let i = 0; i < max_in_page; i++) {
 				let it = ((parseInt(page)) * max_in_page) + i;
@@ -425,7 +426,7 @@ async function RefreshList(drawbuttons) {
 						const entry = document.createElement("div");
 						entry.className = "entry";
 						entry.onclick = function() {
-							window.open("https://xboxfocus.github.io?pid=" + mypid + "&gname=" + entryData.Name);
+							window.open("/?pid=" + mypid + "&gname=" + entryData.Name);
 						};
 						const img = document.createElement("img");
 
@@ -456,7 +457,7 @@ async function RefreshList(drawbuttons) {
 					const entry = document.createElement("div");
 					entry.className = "entry";
 					entry.onclick = function() {
-						window.location.href = "https://xboxfocus.github.io/allxpa";
+						window.location.href = "/allxpa";
 					};
 					const img = document.createElement("img");
 					img.src = "none.png";
