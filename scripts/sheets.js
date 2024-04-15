@@ -448,7 +448,7 @@ async function RefreshList(drawbuttons) {
 								break;
 						}
 
-						const allow_bg = true;
+						const allow_bg = false;
 						if (allow_bg) {
 							img.onmouseover = EntryOnMouseHover;
 							img.onmouseout = EntryOnMouseOut;
