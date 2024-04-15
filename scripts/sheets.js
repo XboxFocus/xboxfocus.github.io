@@ -215,13 +215,13 @@ function ResetText() {
 }
 
 function removeNonAlphanumeric(inputString) {
-	
-    return inputString.replace(/[^a-zA-Z0-9]/g, '');
+
+	return inputString.replace(/[^a-zA-Z0-9]/g, '');
 }
 
 function containsOnlyDigits(inputString) {
-	
-    return /^[0-9]+$/.test(inputString);
+
+	return /^[0-9]+$/.test(inputString);
 }
 
 async function RefreshList(drawbuttons) {
@@ -317,8 +317,8 @@ async function RefreshList(drawbuttons) {
 					break;
 				case 'LIY':
 					data = data.filter(item => {
-						
-						if(item.Date.split("/").length == 3) {
+
+						if (item.Date.split("/").length == 3) {
 							const [day, month, year] = item.Date.split("/");
 							const jsDate = new Date(year, month - 1, day);
 							const today = new Date(); // Get today's date
@@ -327,7 +327,7 @@ async function RefreshList(drawbuttons) {
 							return jsDate >= today;
 						} else {
 							const currentYear = new Date().getFullYear();
-							if(item.Date == currentYear) {
+							if (item.Date == currentYear) {
 								return true;
 							}
 						}
@@ -348,10 +348,10 @@ async function RefreshList(drawbuttons) {
 					break;
 				case 'SRD':
 					data = data.sort((a, b) => {
-						if(a.Date.split("/").length == 3 && b.Date.split("/").length == 3) {
+						if (a.Date.split("/").length == 3 && b.Date.split("/").length == 3) {
 							const [aday, amonth, ayear] = a.Date.split("/");
 							const ajsDate = new Date(ayear, amonth - 1, aday);
-							
+
 							const [bday, bmonth, byear] = b.Date.split("/");
 							const bjsDate = new Date(byear, bmonth - 1, bday);
 
@@ -360,31 +360,31 @@ async function RefreshList(drawbuttons) {
 						} else {
 							let asplit = a.Date.split("/").length;
 							let bsplit = b.Date.split("/").length;
-							if((asplit == 0 || bsplit == 0) && asplit != 1 && asplit != 2 && asplit <= 3 && bsplit != 1 && bsplit != 2 && bsplit <= 3) {
+							if ((asplit == 0 || bsplit == 0) && asplit != 1 && asplit != 2 && asplit <= 3 && bsplit != 1 && bsplit != 2 && bsplit <= 3) {
 								let newa = a.Date;
 								let newb = b.Date;
-								if(a.Date.split("/").length == 0) {
+								if (a.Date.split("/").length == 0) {
 									let only_numbers = containsOnlyDigits(a.Date);
-									if(!only_numbers || a.Date.length != 4) {
+									if (!only_numbers || a.Date.length != 4) {
 										return false;
 									}
 									newa = "01/01/" + a.Date;
 								}
-								if(b.Date.split("/").length == 0) {
+								if (b.Date.split("/").length == 0) {
 									let only_numbers = containsOnlyDigits(b.Date);
-									if(!only_numbers || b.Date.length != 4) {
+									if (!only_numbers || b.Date.length != 4) {
 										return true;
 									}
 									newb = "01/01/" + b.Date;
 								}
-								
-								if(newa.length == 0 || newb.length == 0) {
+
+								if (newa.length == 0 || newb.length == 0) {
 									return false;
 								}
-								
+
 								const [aday, amonth, ayear] = newa.split("/");
 								const ajsDate = new Date(ayear, amonth - 1, aday);
-								
+
 								const [bday, bmonth, byear] = newb.split("/");
 								const bjsDate = new Date(byear, bmonth - 1, bday);
 
@@ -399,8 +399,8 @@ async function RefreshList(drawbuttons) {
 					break;
 			}
 
-			let max_in_page = 256;
-			
+			let max_in_page = 32;
+
 			document.title = "All XPA Games -- Page " + (parseInt(page) + 1);
 			for (let i = 0; i < max_in_page; i++) {
 				let it = ((parseInt(page)) * max_in_page) + i;
@@ -435,9 +435,9 @@ async function RefreshList(drawbuttons) {
 						name.textContent = mypid + '\n';
 						const titleId = document.createElement("titl");
 						titleId.innerHTML = "<b>" + entryData.Name + "<\/b>";
-						
+
 						//console.log("XGP: " + entryData.XGP + " for " + entryData.Name);
-						switch(entryData.XGP) {
+						switch (entryData.XGP) {
 							case 'Yes':
 								name.style.border = "2px solid chartreuse";
 								break;
@@ -446,6 +446,12 @@ async function RefreshList(drawbuttons) {
 								break;
 							default:
 								break;
+						}
+
+						const allow_bg = true;
+						if (allow_bg) {
+							img.onmouseover = EntryOnMouseHover;
+							img.onmouseout = EntryOnMouseOut;
 						}
 						
 						entry.appendChild(img);
@@ -580,6 +586,65 @@ function handleEnterKey(event) {
 	}
 }
 
+async function EntryOnMouseHover(event) {
+
+	let entry = event.target;
+
+	if (entry == null) {
+		return;
+	}
+
+	switch (entry.tagName.toLowerCase()) {
+		case 'tid':
+		case 'titl':
+		case 'img':
+			entry = entry.parentElement;
+			break;
+		default:
+			break;
+	}
+
+	if (entry == null) {
+		return;
+	}
+
+	let mypid = "";
+
+	for (const child of entry.children) {
+		// Check if the child element has the tag name 'tid'
+		if (child.tagName.toLowerCase() === 'tid') {
+			// Found a 'titleId' element
+			mypid = child.textContent.replace("</b>", "").replace("<b>", "").replace("\n", "");
+			break;
+		}
+	}
+
+	mypid = await getActualPID(mypid);
+	let noid = mypid.length <= 0;
+
+	if (noid) {
+		return;
+	}
+
+	// Get a reference to the background container
+	const backgroundContainer = document.getElementById('background-container');
+
+	let horizontal_img = await getCachedGameBackgroundImg(mypid);
+	if (horizontal_img.length == 0) {
+		horizontal_img = "white.png";
+	}
+	let imageUrl = horizontal_img;
+	backgroundContainer.style.backgroundImage = `url('${imageUrl}')`;
+}
+
+async function EntryOnMouseOut(event) {
+
+	// Get a reference to the background container
+	const backgroundContainer = document.getElementById('background-container');
+	let imageUrl = "white.png";
+	backgroundContainer.style.backgroundImage = `url('${imageUrl}')`;
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
 
 	ResetFilters();
@@ -603,6 +668,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 	if (dtext != null && dtext.length > 0) {
 		textInput.value = dtext;
 	}
+
+	// Get a reference to the background container
+	const backgroundContainer = document.getElementById('background-container');
+
+	let imageUrl = "white.png";
+	backgroundContainer.style.width = "100%";
+	backgroundContainer.style.height = "100%";
+	backgroundContainer.style.backgroundImage = `url('${imageUrl}')`;
+
+	// Add the custom-opacity class to the background container
+	backgroundContainer.classList.add('custom-opacity');
 
 	await RefreshList();
 
