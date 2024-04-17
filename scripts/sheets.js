@@ -8,6 +8,8 @@ import {
 	getCachedGameExe
 } from './common.js';
 
+var image_cache = [];
+
 class GameData {
 	constructor(name, pid, dev, pub, date, pc, gen, exc, cloud, feat, xgp, comment) {
 		this.Name = name;
@@ -461,6 +463,9 @@ async function RefreshList(drawbuttons) {
 
 			await sleep(150);
 
+			const allow_bg = false;
+			let used_titleids = [];
+
 			for (let i = 0; i < max_in_page; i++) {
 				const it = i;
 				if (data.length > 0) {
@@ -513,6 +518,7 @@ async function RefreshList(drawbuttons) {
 					img.src = vertical_img.includes("unknown.png") ? vertical_img : vertical_img + "?q=90&w=177&h=265";
 					const name = document.createElement("tid");
 					name.textContent = mypid + '\n';
+					used_titleids.push(mypid);
 
 					const titleId = document.createElement("titl");
 					titleId.innerHTML = tempHTML;
@@ -529,7 +535,6 @@ async function RefreshList(drawbuttons) {
 							break;
 					}
 
-					const allow_bg = false;
 					if (allow_bg) {
 						img.onmouseover = EntryOnMouseHover;
 						img.onmouseout = EntryOnMouseOut;
@@ -559,6 +564,25 @@ async function RefreshList(drawbuttons) {
 					entries.appendChild(entry);
 					break;
 				}
+			}
+
+			if (allow_bg) {
+				let tocache = [];
+
+				for (let k = 0; k < used_titleids.length; k++) {
+					let thispid = used_titleids[k];
+					if (thispid == null || thispid.length == 0) {
+						continue;
+					}
+					let horizontal = await getCachedGameBackgroundImg(thispid);
+					if (horizontal == null || horizontal.length == 0) {
+						continue;
+					}
+					horizontal = horizontal + "?q=90";
+					tocache.push(horizontal);
+				}
+				// No await
+				BrowserCache(tocache);
 			}
 
 			const button = document.createElement('button');
@@ -638,6 +662,18 @@ async function RefreshList(drawbuttons) {
 		}
 	};
 	xhr.send();
+}
+
+async function BrowserCache(urls) {
+
+	for (let i = 0; i < urls.length; i++) {
+		if (urls[i] == null || urls[i].length == 0) {
+			continue;
+		}
+		let img = new Image();
+		img.src = urls[i];
+		image_cache.push(img);
+	}
 }
 
 async function handleSelection() {
