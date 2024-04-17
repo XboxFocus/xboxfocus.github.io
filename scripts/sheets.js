@@ -226,6 +226,10 @@ function containsOnlyDigits(inputString) {
 	return /^[0-9]+$/.test(inputString);
 }
 
+function sleep(ms) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 async function RefreshList(drawbuttons) {
 
 	const exportURL = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQNMfFCzh3cr1wjEgojbLDBqApRz_uUe1Xrn8G7z3gWbpAxqMQl2NuJ9HhAfrVm4pP-voybGg5xSYhX/pubhtml?gid=0&single=true`;
@@ -261,6 +265,11 @@ async function RefreshList(drawbuttons) {
 				dtext = "";
 			}
 
+			const max_in_page = 32;
+			let page_parsed = parseInt(page);
+			let next_page = page_parsed + 1;
+			let base_no = page_parsed * max_in_page;
+
 			const dropdown = document.getElementById("myDropdown");
 			const textInput = document.getElementById("myTextInput");
 
@@ -273,6 +282,8 @@ async function RefreshList(drawbuttons) {
 			}
 
 			switch (dfilt) {
+				case 'OAAZ':
+					break;
 				case 'OAZA':
 					data = data.reverse();
 					break;
@@ -347,10 +358,13 @@ async function RefreshList(drawbuttons) {
 				case '4K':
 					data = data.filter(item => item.Features.toLowerCase().includes("4k"));
 					break;
+				case 'SPI':
+					data = data.sort((a, b) => removeNonAlphanumeric(a.PID.trim().normalize().toLowerCase()).localeCompare(removeNonAlphanumeric(b.PID.trim().normalize().toLowerCase())));
+					break;
 				case 'SD':
 					data = data.sort((a, b) => removeNonAlphanumeric(a.Developer.trim().normalize().toLowerCase()).localeCompare(removeNonAlphanumeric(b.Developer.trim().normalize().toLowerCase())));
 					break;
-				case 'SP':
+				case 'SPU':
 					data = data.sort((a, b) => removeNonAlphanumeric(a.Publisher.trim().normalize().toLowerCase()).localeCompare(removeNonAlphanumeric(b.Publisher.trim().normalize().toLowerCase())));
 					break;
 				case 'SRD':
@@ -402,78 +416,124 @@ async function RefreshList(drawbuttons) {
 						}
 					});
 					break;
+				case 'XBA': {
+					const filteredData = [];
+
+					for (const item of data) {
+						if (item.PID === null) {
+							continue;
+						}
+
+						const mypid = await getActualPID(item.PID);
+						if (mypid === null || mypid.length === 0) {
+							continue;
+						}
+
+						const appsfolderid = await getCachedAppsFolderID(mypid);
+						if (appsfolderid == null || appsfolderid.trim().length == 0) {
+							continue;
+						}
+
+						const gameexe = await getCachedGameExe(mypid);
+
+						if (gameexe == null || gameexe.trim().length == 0) {
+							continue;
+						}
+
+						filteredData.push(item);
+					}
+
+					data = filteredData;
+				}
+				break;
 				default:
 					break;
 			}
 
-			let max_in_page = 32;
+			let mid_data_length = data.length;
 
-			document.title = "All XPA Games -- Page " + (parseInt(page) + 1);
+			if (page_parsed != null && page_parsed > 0) {
+				data = data.slice(base_no);
+			}
+
+			document.title = "All XPA Games -- Page " + next_page;
+
+			await sleep(150);
+
 			for (let i = 0; i < max_in_page; i++) {
-				let it = ((parseInt(page)) * max_in_page) + i;
+				let it = i;
 				if (data.length > 0) {
-					if (it < data.length) {
-
-						const entryData = data[it];
-						//console.log(entryData.Name);
-
-						let mypid = getActualPID(entryData.PID);
-						let noid = mypid.length <= 0;
-
-						//console.log("pid: " + mypid);
-						let vertical_img = "";
-
-						if (!noid) {
-							vertical_img = await getCachedGameVerticalImg(mypid);
-						}
-						if (vertical_img.length == 0) {
-							vertical_img = "unknown.png";
-						}
-
-						const entry = document.createElement("div");
-						entry.className = "entry";
-						entry.onclick = function() {
-							window.open("/?pid=" + mypid + "&gname=" + entryData.Name);
-						};
-						const img = document.createElement("img");
-
-						img.src = vertical_img.includes("unknown.png") ? vertical_img : vertical_img + "?q=90&w=177&h=265";
-						const name = document.createElement("tid");
-						name.textContent = mypid + '\n';
-						
-						let appsfolderid = await getCachedAppsFolderID(mypid);
-						let gameexe = await getCachedGameExe(mypid);
-						const titleId = document.createElement("titl");
-						titleId.innerHTML = "";
-						if(appsfolderid == null || gameexe == null || appsfolderid.length == 0 || gameexe.length == 0) {
-							titleId.innerHTML = "<i>" + entryData.Name + "<\/i>";
-						} else {
-							titleId.innerHTML = "<b>" + entryData.Name + "<\/b>";
-						}
-
-						//console.log("XGP: " + entryData.XGP + " for " + entryData.Name);
-						switch (entryData.XGP) {
-							case 'Yes':
-								name.style.border = "2px solid chartreuse";
-								break;
-							case 'Soon':
-								name.style.border = "2px solid gold";
-								break;
-							default:
-								break;
-						}
-
-						const allow_bg = false;
-						if (allow_bg) {
-							img.onmouseover = EntryOnMouseHover;
-							img.onmouseout = EntryOnMouseOut;
-						}
-						
-						entry.appendChild(img);
-						entry.appendChild(name);
-						entry.appendChild(titleId);
-						entries.appendChild(entry);
+					if (it >= data.length) {
+						break;
 					}
+					const entryData = data[it];
+					//console.log(entryData.Name);
+
+					let mypid = await getActualPID(entryData.PID);
+
+					if (mypid == null) {
+						continue;
+					}
+
+					let noid = mypid.length <= 0;
+
+					//console.log("pid: " + mypid);
+					let vertical_img = "";
+
+					if (!noid) {
+						vertical_img = await getCachedGameVerticalImg(mypid);
+					}
+					if (vertical_img.length == 0) {
+						vertical_img = "unknown.png";
+					}
+
+					let appsfolderid = await getCachedAppsFolderID(mypid);
+					let gameexe = await getCachedGameExe(mypid);
+					let tempHTML = "";
+					if (appsfolderid == null || gameexe == null || appsfolderid.trim().length == 0 || gameexe.trim().length == 0) {
+						tempHTML = "<i>" + entryData.Name + "<\/i>";
+					} else {
+						tempHTML = "<b>" + entryData.Name + "<\/b>";
+					}
+
+					const entry = document.createElement("div");
+					entry.className = "entry";
+					entry.onclick = function() {
+						window.open("/?pid=" + mypid + "&gname=" + entryData.Name);
+					};
+					const img = document.createElement("img");
+
+					img.src = vertical_img.includes("unknown.png") ? vertical_img : vertical_img + "?q=90&w=177&h=265";
+					const name = document.createElement("tid");
+					name.textContent = mypid + '\n';
+
+					const titleId = document.createElement("titl");
+					titleId.innerHTML = tempHTML;
+
+					//console.log("XGP: " + entryData.XGP + " for " + entryData.Name);
+					switch (entryData.XGP) {
+						case 'Yes':
+							name.style.border = "2px solid chartreuse";
+							break;
+						case 'Soon':
+							name.style.border = "2px solid gold";
+							break;
+						default:
+							break;
+					}
+
+					const allow_bg = false;
+					if (allow_bg) {
+						img.onmouseover = EntryOnMouseHover;
+						img.onmouseout = EntryOnMouseOut;
+					}
+
+					entry.appendChild(img);
+					entry.appendChild(name);
+					entry.appendChild(titleId);
+					entries.appendChild(entry);
+
+					await sleep(12);
 				} else {
 					const entry = document.createElement("div");
 					entry.className = "entry";
@@ -503,8 +563,8 @@ async function RefreshList(drawbuttons) {
 			container.style.justifyContent = 'space-evenly';
 			container.style.alignItems = 'center';
 			container.style.textAlign = 'center';
-			let has_first_button = (parseInt(page)) > 0;
-			let has_second_button = data.length > (max_in_page * ((parseInt(page)) + 1));
+			let has_first_button = page_parsed > 0;
+			let has_second_button = mid_data_length > (max_in_page * next_page); // max * (page + 1)
 			if (has_first_button || has_second_button) {
 				const heading = document.createElement('h3');
 				heading.textContent = 'Buttons';
@@ -574,6 +634,7 @@ async function RefreshList(drawbuttons) {
 }
 
 async function handleSelection() {
+
 	const dropdown = document.getElementById("myDropdown");
 	const textInput = document.getElementById("myTextInput");
 	textInput.removeEventListener("keydown", handleEnterKey);
@@ -594,6 +655,7 @@ async function handleSelection() {
 }
 
 function handleEnterKey(event) {
+
 	if (event.key === "Enter" && event.target.value.trim().length > 0) {
 		// Perform your desired action here
 		const dropdown = document.getElementById("myDropdown");
