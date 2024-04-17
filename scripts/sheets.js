@@ -274,6 +274,11 @@ async function RefreshList(drawbuttons) {
 				case 'OAZA':
 					data = data.reverse();
 					break;
+				case 'NAM':
+					if (dtext.trim().length > 0) {
+						data = data.filter(item => item.Name.toLowerCase().includes(dtext.toLowerCase()));
+					}
+					break;
 				case 'DEV':
 					if (dtext.trim().length > 0) {
 						data = data.filter(item => item.Developer.toLowerCase().includes(dtext.toLowerCase()));
@@ -504,12 +509,12 @@ async function RefreshList(drawbuttons) {
 				// be perfectly centered
 				back_button.innerHTML = '<-- Page';
 				back_button.onclick = function() {
-					if (textInput.value.length > 0 || (dropdown.value != "DEV" && dropdown.value != "PUB")) {
+					if (textInput.value.length > 0 || (dropdown.value != "DEV" && dropdown.value != "PUB" && dropdown.value != "NAM")) {
 						if (dtext_url_value.length > 0 && dtext_url_value == textInput.value) {
 							const newUrl = window.location.href.split('?')[0] + '?page=' + ((parseInt(urlParams.get('page')) || 0) - 1) + "&filter=" + (dropdown.value.length > 0 ? dropdown.value : "OAAZ") + "&text=" + textInput.value;
 							window.location.href = newUrl;
 						} else {
-							if ((dropdown.value == "DEV" || dropdown.value == "PUB")) {
+							if ((dropdown.value == "DEV" || dropdown.value == "PUB" || dropdown.value == "NAM")) {
 								const newUrl = window.location.href.split('?')[0] + '?page=' + ((parseInt(urlParams.get('page')) || 0) - 1);
 								window.location.href = newUrl;
 							} else {
@@ -533,12 +538,12 @@ async function RefreshList(drawbuttons) {
 				// be perfectly centered
 				button.innerHTML = '--> Page';
 				button.onclick = function() {
-					if (textInput.value.length > 0 || (dropdown.value != "DEV" && dropdown.value != "PUB")) {
+					if (textInput.value.length > 0 || (dropdown.value != "DEV" && dropdown.value != "PUB" && dropdown.value != "NAM")) {
 						if (dtext_url_value.length > 0 && dtext_url_value == textInput.value) {
 							const newUrl = window.location.href.split('?')[0] + '?page=' + ((parseInt(urlParams.get('page')) || 0) + 1) + "&filter=" + (dropdown.value.length > 0 ? dropdown.value : "OAAZ") + "&text=" + textInput.value;
 							window.location.href = newUrl;
 						} else {
-							if ((dropdown.value == "DEV" || dropdown.value == "PUB")) {
+							if ((dropdown.value == "DEV" || dropdown.value == "PUB" || dropdown.value == "NAM")) {
 								const newUrl = window.location.href.split('?')[0] + '?page=' + ((parseInt(urlParams.get('page')) || 0) + 1);
 								window.location.href = newUrl;
 							} else {
@@ -566,6 +571,7 @@ async function handleSelection() {
 	switch (dropdown.value) {
 		case "DEV":
 		case "PUB":
+		case "NAM":
 			textInput.style.display = "inline-block";
 			textInput.addEventListener("keydown", handleEnterKey);
 			break;
@@ -660,6 +666,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 	switch (dropdown.value) {
 		case "DEV":
 		case "PUB":
+		case "NAM":
 			textInput.style.display = "inline-block";
 			textInput.addEventListener("keydown", handleEnterKey);
 			break;
