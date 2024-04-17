@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 	// Get a reference to the background container
 	const backgroundContainer = document.getElementById('background-container');
 
-	let imageUrl = horizontal_img;
+	let imageUrl = horizontal_img + "?q=90";
 	backgroundContainer.style.width = "100%";
 	backgroundContainer.style.height = "100%";
 	backgroundContainer.style.backgroundImage = `url('${imageUrl}')`;

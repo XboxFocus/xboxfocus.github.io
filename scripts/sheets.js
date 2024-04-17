@@ -722,7 +722,7 @@ async function EntryOnMouseHover(event) {
 	if (horizontal_img.length == 0) {
 		horizontal_img = "white.png";
 	} else {
-		//horizontal_img = horizontal_img + "?q=1";
+		horizontal_img = horizontal_img + "?q=90";
 	}
 	const imageUrl = horizontal_img;
 	backgroundContainer.style.backgroundImage = `url('${imageUrl}')`;
