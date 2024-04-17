@@ -425,7 +425,7 @@ async function RefreshList(drawbuttons) {
 							continue;
 						}
 
-						const mypid = await getActualPID(item.PID);
+						const mypid = getActualPID(item.PID);
 						if (mypid === null || mypid.length === 0) {
 							continue;
 						}
@@ -470,7 +470,7 @@ async function RefreshList(drawbuttons) {
 					const entryData = data[it];
 					//console.log(entryData.Name);
 
-					const mypid = await getActualPID(entryData.PID);
+					const mypid = getActualPID(entryData.PID);
 
 					if (mypid == null) {
 						continue;
@@ -702,7 +702,7 @@ async function EntryOnMouseHover(event) {
 		return;
 	}
 
-	mypid = await getActualPID(mypid);
+	mypid = getActualPID(mypid);
 	const noid = mypid.length <= 0;
 
 	if (noid) {
