@@ -44,6 +44,7 @@ async function DownloadArray(arr) {
 }
 
 async function ExtractSheetsData(csvData) {
+
 	let rows = csvData.split('\n'); // Split by newline
 	let my_id = -1;
 	for (let i = 0; i < rows.length; i++) {
@@ -144,11 +145,11 @@ async function ExtractSheetsData(csvData) {
 
 		switch (stage) {
 			case 1:
-				var pidIndex = rows[i].indexOf('pid=');
+				const pidIndex = rows[i].indexOf('pid=');
 				if (pidIndex !== -1) {
-					var actualPid = rows[i].substring(pidIndex + 4);
-					var gnameIndex = actualPid.indexOf('&gname');
-					var pid = (gnameIndex !== -1) ? actualPid.substring(0, gnameIndex) : actualPid;
+					const actualPid = rows[i].substring(pidIndex + 4);
+					const gnameIndex = actualPid.indexOf('&gname');
+					const pid = (gnameIndex !== -1) ? actualPid.substring(0, gnameIndex) : actualPid;
 					if (pid.length > 0) {
 						gd.PID = pid.toUpperCase();
 					} else {
@@ -243,14 +244,14 @@ async function RefreshList(drawbuttons) {
 		if (xhr.readyState === 4 && xhr.status === 200) {
 
 			// Process the CSV data (e.g., parse it into an array)
-			let csvData = xhr.responseText;
+			const csvData = xhr.responseText;
 
-			let games = await ExtractSheetsData(csvData);
+			const games = await ExtractSheetsData(csvData);
 			let data = games;
 
 			//console.log("Data size: " + data.length);
 
-			let urlParams = new URLSearchParams(window.location.search);
+			const urlParams = new URLSearchParams(window.location.search);
 			let page = urlParams.get('page');
 			let dfilt = urlParams.get('filter');
 			let dtext = urlParams.get('text');
@@ -266,9 +267,9 @@ async function RefreshList(drawbuttons) {
 			}
 
 			const max_in_page = 32;
-			let page_parsed = parseInt(page);
-			let next_page = page_parsed + 1;
-			let base_no = page_parsed * max_in_page;
+			const page_parsed = parseInt(page);
+			const next_page = page_parsed + 1;
+			const base_no = page_parsed * max_in_page;
 
 			const dropdown = document.getElementById("myDropdown");
 			const textInput = document.getElementById("myTextInput");
@@ -379,20 +380,20 @@ async function RefreshList(drawbuttons) {
 							// Compare the item's date with today
 							return ajsDate >= bjsDate;
 						} else {
-							let asplit = a.Date.split("/").length;
-							let bsplit = b.Date.split("/").length;
+							const asplit = a.Date.split("/").length;
+							const bsplit = b.Date.split("/").length;
 							if ((asplit == 0 || bsplit == 0) && asplit != 1 && asplit != 2 && asplit <= 3 && bsplit != 1 && bsplit != 2 && bsplit <= 3) {
 								let newa = a.Date;
 								let newb = b.Date;
 								if (a.Date.split("/").length == 0) {
-									let only_numbers = containsOnlyDigits(a.Date);
+									const only_numbers = containsOnlyDigits(a.Date);
 									if (!only_numbers || a.Date.length != 4) {
 										return false;
 									}
 									newa = "01/01/" + a.Date;
 								}
 								if (b.Date.split("/").length == 0) {
-									let only_numbers = containsOnlyDigits(b.Date);
+									const only_numbers = containsOnlyDigits(b.Date);
 									if (!only_numbers || b.Date.length != 4) {
 										return true;
 									}
@@ -450,7 +451,7 @@ async function RefreshList(drawbuttons) {
 					break;
 			}
 
-			let mid_data_length = data.length;
+			const mid_data_length = data.length;
 
 			if (page_parsed != null && page_parsed > 0) {
 				data = data.slice(base_no);
@@ -461,7 +462,7 @@ async function RefreshList(drawbuttons) {
 			await sleep(150);
 
 			for (let i = 0; i < max_in_page; i++) {
-				let it = i;
+				const it = i;
 				if (data.length > 0) {
 					if (it >= data.length) {
 						break;
@@ -469,13 +470,13 @@ async function RefreshList(drawbuttons) {
 					const entryData = data[it];
 					//console.log(entryData.Name);
 
-					let mypid = await getActualPID(entryData.PID);
+					const mypid = await getActualPID(entryData.PID);
 
 					if (mypid == null) {
 						continue;
 					}
 
-					let noid = mypid.length <= 0;
+					const noid = mypid.length <= 0;
 
 					//console.log("pid: " + mypid);
 					let vertical_img = "";
@@ -487,8 +488,8 @@ async function RefreshList(drawbuttons) {
 						vertical_img = "unknown.png";
 					}
 
-					let appsfolderid = await getCachedAppsFolderID(mypid);
-					let gameexe = await getCachedGameExe(mypid);
+					const appsfolderid = await getCachedAppsFolderID(mypid);
+					const gameexe = await getCachedGameExe(mypid);
 					let tempHTML = "";
 					if (appsfolderid == null || gameexe == null || appsfolderid.trim().length == 0 || gameexe.trim().length == 0) {
 						tempHTML = "<i>" + entryData.Name + "<\/i>";
@@ -563,8 +564,8 @@ async function RefreshList(drawbuttons) {
 			container.style.justifyContent = 'space-evenly';
 			container.style.alignItems = 'center';
 			container.style.textAlign = 'center';
-			let has_first_button = page_parsed > 0;
-			let has_second_button = mid_data_length > (max_in_page * next_page); // max * (page + 1)
+			const has_first_button = page_parsed > 0;
+			const has_second_button = mid_data_length > (max_in_page * next_page); // max * (page + 1)
 			if (has_first_button || has_second_button) {
 				const heading = document.createElement('h3');
 				heading.textContent = 'Buttons';
@@ -697,8 +698,12 @@ async function EntryOnMouseHover(event) {
 		}
 	}
 
+	if (mypid.length == 0) {
+		return;
+	}
+
 	mypid = await getActualPID(mypid);
-	let noid = mypid.length <= 0;
+	const noid = mypid.length <= 0;
 
 	if (noid) {
 		return;
@@ -710,8 +715,10 @@ async function EntryOnMouseHover(event) {
 	let horizontal_img = await getCachedGameBackgroundImg(mypid);
 	if (horizontal_img.length == 0) {
 		horizontal_img = "white.png";
+	} else {
+		//horizontal_img = horizontal_img + "?q=1";
 	}
-	let imageUrl = horizontal_img;
+	const imageUrl = horizontal_img;
 	backgroundContainer.style.backgroundImage = `url('${imageUrl}')`;
 }
 
@@ -719,7 +726,7 @@ async function EntryOnMouseOut(event) {
 
 	// Get a reference to the background container
 	const backgroundContainer = document.getElementById('background-container');
-	let imageUrl = "white.png";
+	const imageUrl = "white.png";
 	backgroundContainer.style.backgroundImage = `url('${imageUrl}')`;
 }
 
@@ -729,7 +736,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 	const dropdown = document.getElementById("myDropdown");
 	const textInput = document.getElementById("myTextInput");
-	let urlParams = new URLSearchParams(window.location.search);
+	const urlParams = new URLSearchParams(window.location.search);
 	let dfilt = urlParams.get('filter');
 	if (dfilt != null && dfilt.length > 0) {
 		dropdown.value = dfilt;
@@ -751,7 +758,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 	// Get a reference to the background container
 	const backgroundContainer = document.getElementById('background-container');
 
-	let imageUrl = "white.png";
+	const imageUrl = "white.png";
 	backgroundContainer.style.width = "100%";
 	backgroundContainer.style.height = "100%";
 	backgroundContainer.style.backgroundImage = `url('${imageUrl}')`;

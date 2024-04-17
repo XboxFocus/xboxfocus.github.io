@@ -2,11 +2,11 @@ export const urlParams = new URLSearchParams(window.location.search);
 export const pid = urlParams.get('pid')?.replace("/\n/g", "")?.trim();
 export const gname = urlParams.get('gname')?.replace("/\n/g", "")?.trim();
 
-export let cached_data = []
+export var cached_data = []
 
 export function getActualName(my_name) {
 
-	let ret = my_name.replace("_", "'");
+	const ret = my_name.replace("_", "'");
 	return ret;
 }
 
@@ -29,7 +29,7 @@ export function getActualPID(my_pid) {
 
 export function getSearchableName(my_name) {
 
-	let ret = my_name.replace(" ", "+")
+	const ret = my_name.replace(" ", "+")
 	return ret;
 }
 
@@ -67,14 +67,10 @@ export async function getCachedData(pid) {
 
 	for (let i = 0, len = cached_data.length; i < len; i++) {
 		const line = cached_data[i];
-		const line_arr = line.split("|");
+		const http = line.indexOf("http");
+		const has_pid = line.toUpperCase().trim().indexOf(pid_trim);
 
-		if (line_arr.length <= 1) {
-			continue;
-		}
-
-		const line_pid = line_arr[1].toUpperCase().trim();
-		if (line_pid === pid_trim) {
+		if (has_pid > 0 && (has_pid < http || http < 0)) {
 			return line.trim();
 		}
 	}
@@ -82,52 +78,29 @@ export async function getCachedData(pid) {
 	return "";
 }
 
-
-
 export async function getCachedAppsFolderID(pid) {
 
-	let cafid = await getCachedData(pid);
-	if (cafid.length <= 4) {
-		return "";
-	}
-	let arr = cafid.split("|");
-	for (let i = 0, len = arr.length; i < len; i++) {
-		if (i === 4) {
-			return arr[i];
-		}
-	}
-	return "";
+	const cafid = await getCachedData(pid);
+	const arr = cafid.split("|");
+	const ret = arr[4] || "";
+	return ret;
 }
 
 export async function getCachedGameExe(pid) {
 
-	let cge = await getCachedData(pid);
-	if (cge.length <= 5) {
-		return "";
-	}
-
-	let arr = cge.split("|");
-	for (let i = 0, len = arr.length; i < len; i++) {
-		if (i === 5) {
-			return arr[i];
-		}
-	}
-
-	return "";
+	const cge = await getCachedData(pid);
+	const arr = cge.split("|");
+	const ret = arr[5] || "";
+	return ret;
 }
 
 export async function getCachedGameVerticalImg(pid) {
 
-	let cge = await getCachedData(pid);
-	if (cge.length <= 2) {
-		return "";
-	}
-
-	let arr = cge.split("|");
-	for (let i = 0, len = arr.length; i < len; i++) {
-		if (i === 2 && arr[i].includes("https")) {
-			return arr[i];
-		}
+	const cge = await getCachedData(pid);
+	const arr = cge.split("|");
+	const img = arr[2] || "";
+	if (img.includes("https")) {
+		return img;
 	}
 
 	return "";
@@ -135,16 +108,11 @@ export async function getCachedGameVerticalImg(pid) {
 
 export async function getCachedGameBackgroundImg(pid) {
 
-	let cge = await getCachedData(pid);
-	if (cge.length <= 3) {
-		return "";
-	}
-
-	let arr = cge.split("|");
-	for (let i = 0, len = arr.length; i < len; i++) {
-		if (i === 3 && arr[i].includes("https")) {
-			return arr[i];
-		}
+	const cge = await getCachedData(pid);
+	const arr = cge.split("|");
+	const img = arr[3] || "";
+	if (img.includes("https")) {
+		return img;
 	}
 
 	return "";
