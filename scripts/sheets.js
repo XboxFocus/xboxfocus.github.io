@@ -480,16 +480,22 @@ async function RefreshList(drawbuttons) {
 
 					//console.log("pid: " + mypid);
 					let vertical_img = "";
+					let appsfolderid = "";
+					let gameexe = "";
 
 					if (!noid) {
 						vertical_img = await getCachedGameVerticalImg(mypid);
+						if (vertical_img != null && vertical_img.length > 0) {
+							appsfolderid = await getCachedAppsFolderID(mypid);
+							if (appsfolderid != null && appsfolderid.length > 0) {
+								gameexe = await getCachedGameExe(mypid);
+							}
+						}
 					}
 					if (vertical_img.length == 0) {
 						vertical_img = "unknown.png";
 					}
 
-					const appsfolderid = await getCachedAppsFolderID(mypid);
-					const gameexe = await getCachedGameExe(mypid);
 					let tempHTML = "";
 					if (appsfolderid == null || gameexe == null || appsfolderid.trim().length == 0 || gameexe.trim().length == 0) {
 						tempHTML = "<i>" + entryData.Name + "<\/i>";
