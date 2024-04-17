@@ -3,7 +3,9 @@ import {
 	pid,
 	getActualPID,
 	getCachedGameVerticalImg,
-	getCachedGameBackgroundImg
+	getCachedGameBackgroundImg,
+	getCachedAppsFolderID,
+	getCachedGameExe
 } from './common.js';
 
 class GameData {
@@ -438,8 +440,16 @@ async function RefreshList(drawbuttons) {
 						img.src = vertical_img.includes("unknown.png") ? vertical_img : vertical_img + "?q=90&w=177&h=265";
 						const name = document.createElement("tid");
 						name.textContent = mypid + '\n';
+						
+						let appsfolderid = await getCachedAppsFolderID(mypid);
+						let gameexe = await getCachedGameExe(mypid);
 						const titleId = document.createElement("titl");
-						titleId.innerHTML = "<b>" + entryData.Name + "<\/b>";
+						titleId.innerHTML = "";
+						if(appsfolderid == null || gameexe == null || appsfolderid.length == 0 || gameexe.length == 0) {
+							titleId.innerHTML = "<i>" + entryData.Name + "<\/i>";
+						} else {
+							titleId.innerHTML = "<b>" + entryData.Name + "<\/b>";
+						}
 
 						//console.log("XGP: " + entryData.XGP + " for " + entryData.Name);
 						switch (entryData.XGP) {
