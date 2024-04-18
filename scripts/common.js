@@ -6,7 +6,7 @@ export var cached_data = []
 
 export function getActualName(my_name) {
 
-	const ret = my_name.replace("_", "'");
+	const ret = my_name.replace("°", "&").replace("_", "'").replace("ç", "+");
 	return ret;
 }
 
@@ -29,7 +29,7 @@ export function getActualPID(my_pid) {
 
 export function getSearchableName(my_name) {
 
-	const ret = my_name.replace(" ", "+")
+	const ret = getActualName(my_name).replace("+", "%2B").replace(" ", "+")
 	return ret;
 }
 
@@ -116,6 +116,16 @@ export async function getCachedGameBackgroundImg(pid) {
 	}
 
 	return "";
+}
+
+export function getImageQuality() {
+
+	return "90";
+}
+
+export function getVerticalImageSize() {
+
+	return "w=177&h=265";
 }
 
 if (pid != null && pid.length > 0) {

@@ -3,7 +3,9 @@ import {
 	pid,
 	getActualPID,
 	getCachedGameVerticalImg,
-	getCachedGameBackgroundImg
+	getCachedGameBackgroundImg,
+	getImageQuality,
+	getVerticalImageSize
 } from './common.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -23,17 +25,22 @@ document.addEventListener('DOMContentLoaded', async () => {
 			horizontal_img = await getCachedGameBackgroundImg(mypid);
 		}
 	}
+
 	if (vertical_img.length == 0) {
 		vertical_img = "unknown.png";
 		horizontal_img = "white.png";
+	} else {
+		vertical_img = vertical_img + "?q=" + getImageQuality() + "&" + getVerticalImageSize();
 	}
 
 	imageElement.src = vertical_img;
+	//console.log("Vertical: " + vertical_img);
 
 	// Get a reference to the background container
 	const backgroundContainer = document.getElementById('background-container');
 
-	let imageUrl = horizontal_img + "?q=90";
+	let imageUrl = horizontal_img + "?q=" + getImageQuality();
+	//console.log("Horizontal: " + imageUrl);
 	backgroundContainer.style.width = "100%";
 	backgroundContainer.style.height = "100%";
 	backgroundContainer.style.backgroundImage = `url('${imageUrl}')`;

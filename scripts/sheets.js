@@ -5,10 +5,14 @@ import {
 	getCachedGameVerticalImg,
 	getCachedGameBackgroundImg,
 	getCachedAppsFolderID,
-	getCachedGameExe
+	getCachedGameExe,
+	getImageQuality,
+	getVerticalImageSize
 } from './common.js';
 
-var image_cache = [];
+var image_cache = new Map();
+const allow_bg = false;
+const max_in_page = 32;
 
 class GameData {
 	constructor(name, pid, dev, pub, date, pc, gen, exc, cloud, feat, xgp, comment) {
@@ -230,6 +234,7 @@ function containsOnlyDigits(inputString) {
 }
 
 function sleep(ms) {
+
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
@@ -268,7 +273,6 @@ async function RefreshList(drawbuttons) {
 				dtext = "";
 			}
 
-			const max_in_page = 32;
 			const page_parsed = parseInt(page);
 			const next_page = page_parsed + 1;
 			const base_no = page_parsed * max_in_page;
@@ -463,7 +467,6 @@ async function RefreshList(drawbuttons) {
 
 			await sleep(150);
 
-			const allow_bg = false;
 			let used_titleids = [];
 
 			for (let i = 0; i < max_in_page; i++) {
@@ -511,11 +514,11 @@ async function RefreshList(drawbuttons) {
 					const entry = document.createElement("div");
 					entry.className = "entry";
 					entry.onclick = function() {
-						window.open("/?pid=" + mypid + "&gname=" + entryData.Name);
+						window.open("/?pid=" + mypid + "&gname=" + entryData.Name.replace("&", "°").replace("'", "_").replace("+", "ç"));
 					};
 					const img = document.createElement("img");
 
-					img.src = vertical_img.includes("unknown.png") ? vertical_img : vertical_img + "?q=90&w=177&h=265";
+					img.src = vertical_img.includes("unknown.png") ? vertical_img : vertical_img + "?q=" + getImageQuality() + "&" + getVerticalImageSize();
 					const name = document.createElement("tid");
 					name.textContent = mypid + '\n';
 					used_titleids.push(mypid);
@@ -535,10 +538,8 @@ async function RefreshList(drawbuttons) {
 							break;
 					}
 
-					if (allow_bg) {
-						img.onmouseover = EntryOnMouseHover;
-						img.onmouseout = EntryOnMouseOut;
-					}
+					img.onmouseover = EntryOnMouseHover;
+					img.onmouseout = EntryOnMouseOut;
 
 					entry.appendChild(img);
 					entry.appendChild(name);
@@ -578,7 +579,7 @@ async function RefreshList(drawbuttons) {
 					if (horizontal == null || horizontal.length == 0) {
 						continue;
 					}
-					horizontal = horizontal + "?q=90";
+					horizontal = horizontal + "?q=" + getImageQuality();
 					tocache.push(horizontal);
 				}
 				// No await
@@ -664,15 +665,35 @@ async function RefreshList(drawbuttons) {
 	xhr.send();
 }
 
+async function BrowserCacheImage(url) {
+
+	if (!url || url.length === 0) {
+		return;
+	}
+
+	if (image_cache.has(url)) {
+		return;
+	}
+
+	const img = new Image();
+	img.src = url;
+	await new Promise((resolve, reject) => {
+		img.onload = resolve;
+		img.onerror = reject;
+	});
+
+	if (image_cache.size >= max_in_page) {
+		const firstKey = image_cache.keys().next().value;
+		image_cache.delete(firstKey);
+	}
+
+	image_cache.set(url, img);
+}
+
 async function BrowserCache(urls) {
 
 	for (let i = 0; i < urls.length; i++) {
-		if (urls[i] == null || urls[i].length == 0) {
-			continue;
-		}
-		let img = new Image();
-		img.src = urls[i];
-		image_cache.push(img);
+		BrowserCacheImage(urls[i]);
 	}
 }
 
@@ -751,20 +772,30 @@ async function EntryOnMouseHover(event) {
 		return;
 	}
 
-	// Get a reference to the background container
-	const backgroundContainer = document.getElementById('background-container');
-
 	let horizontal_img = await getCachedGameBackgroundImg(mypid);
 	if (horizontal_img.length == 0) {
 		horizontal_img = "white.png";
 	} else {
-		horizontal_img = horizontal_img + "?q=90";
+		horizontal_img = horizontal_img + "?q=" + getImageQuality();
 	}
 	const imageUrl = horizontal_img;
-	backgroundContainer.style.backgroundImage = `url('${imageUrl}')`;
+
+	if (allow_bg) {
+		// Get a reference to the background container
+		const backgroundContainer = document.getElementById('background-container');
+		backgroundContainer.style.backgroundImage = `url('${imageUrl}')`;
+	} else {
+		if (!horizontal_img.includes("white.png")) {
+			BrowserCacheImage(horizontal_img);
+		}
+	}
 }
 
 async function EntryOnMouseOut(event) {
+
+	if (!allow_bg) {
+		return;
+	}
 
 	// Get a reference to the background container
 	const backgroundContainer = document.getElementById('background-container');
