@@ -410,7 +410,7 @@ async function RefreshList(drawbuttons) {
 						const [bday, bmonth, byear] = b.Date.split("/");
 						const bjsDate = new Date(byear, bmonth - 1, bday);
 
-						return ajsDate >= bjsDate;
+						return ajsDate - bjsDate;
 					});
 				}
 				break;
