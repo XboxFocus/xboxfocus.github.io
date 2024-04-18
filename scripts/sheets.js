@@ -444,6 +444,84 @@ async function RefreshList(drawbuttons) {
 					data = filteredData;
 				}
 				break;
+				case 'NBA': {
+					const filteredData = [];
+
+					for (const item of data) {
+						if (item.PID === null) {
+							continue;
+						}
+
+						const mypid = getActualPID(item.PID);
+						if (mypid === null || mypid.length === 0) {
+							continue;
+						}
+
+						const appsfolderid = await getCachedAppsFolderID(mypid);
+						if (appsfolderid.length > 0) {
+							continue;
+						}
+
+						const gameexe = await getCachedGameExe(mypid);
+
+						if (gameexe.length > 0) {
+							continue;
+						}
+
+						filteredData.push(item);
+					}
+
+					data = filteredData;
+				}
+				break;
+				case 'VIM': {
+					const filteredData = [];
+
+					for (const item of data) {
+						if (item.PID === null) {
+							continue;
+						}
+
+						const mypid = getActualPID(item.PID);
+						if (mypid === null || mypid.length === 0) {
+							continue;
+						}
+
+						let vertical_img = await getCachedGameVerticalImg(mypid);
+						if (vertical_img.length == 0) {
+							continue;
+						}
+
+						filteredData.push(item);
+					}
+
+					data = filteredData;
+				}
+				break;
+				case 'NVI': {
+					const filteredData = [];
+
+					for (const item of data) {
+						if (item.PID === null) {
+							continue;
+						}
+
+						const mypid = getActualPID(item.PID);
+						if (mypid === null || mypid.length === 0) {
+							continue;
+						}
+
+						let vertical_img = await getCachedGameVerticalImg(mypid);
+						if (vertical_img.length != 0) {
+							continue;
+						}
+
+						filteredData.push(item);
+					}
+
+					data = filteredData;
+				}
+				break;
 				default:
 					break;
 			}
@@ -455,8 +533,6 @@ async function RefreshList(drawbuttons) {
 			}
 
 			document.title = "All XPA Games -- Page " + next_page;
-
-			await sleep(150);
 
 			let used_titleids = [];
 
