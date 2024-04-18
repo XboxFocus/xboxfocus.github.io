@@ -462,7 +462,7 @@ async function RefreshList(drawbuttons) {
 
 			for (let i = 0; i < max_in_page; i++) {
 				const it = i;
-				if (data.length > 0) {
+				if (data != null && data.length > 0) {
 					if (it >= data.length) {
 						break;
 					}
