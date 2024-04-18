@@ -374,55 +374,46 @@ async function RefreshList(drawbuttons) {
 				case 'SPU':
 					data = data.sort((a, b) => removeNonAlphanumeric(a.Publisher.trim().normalize().toLowerCase()).localeCompare(removeNonAlphanumeric(b.Publisher.trim().normalize().toLowerCase())));
 					break;
-				case 'SRD':
-					data = data.sort((a, b) => {
-						if (a.Date.split("/").length == 3 && b.Date.split("/").length == 3) {
-							const [aday, amonth, ayear] = a.Date.split("/");
-							const ajsDate = new Date(ayear, amonth - 1, aday);
+				case 'SRD': {
+					const filteredData = [];
 
-							const [bday, bmonth, byear] = b.Date.split("/");
-							const bjsDate = new Date(byear, bmonth - 1, bday);
-
-							// Compare the item's date with today
-							return ajsDate >= bjsDate;
-						} else {
-							const asplit = a.Date.split("/").length;
-							const bsplit = b.Date.split("/").length;
-							if ((asplit == 0 || bsplit == 0) && asplit != 1 && asplit != 2 && asplit <= 3 && bsplit != 1 && bsplit != 2 && bsplit <= 3) {
-								let newa = a.Date;
-								let newb = b.Date;
-								if (a.Date.split("/").length == 0) {
-									const only_numbers = containsOnlyDigits(a.Date);
-									if (!only_numbers || a.Date.length != 4) {
-										return false;
-									}
-									newa = "01/01/" + a.Date;
-								}
-								if (b.Date.split("/").length == 0) {
-									const only_numbers = containsOnlyDigits(b.Date);
-									if (!only_numbers || b.Date.length != 4) {
-										return true;
-									}
-									newb = "01/01/" + b.Date;
-								}
-
-								if (newa.length == 0 || newb.length == 0) {
-									return false;
-								}
-
-								const [aday, amonth, ayear] = newa.split("/");
-								const ajsDate = new Date(ayear, amonth - 1, aday);
-
-								const [bday, bmonth, byear] = newb.split("/");
-								const bjsDate = new Date(byear, bmonth - 1, bday);
-
-								// Compare the item's date with today
-								return ajsDate >= bjsDate;
-							}
-							return false;
+					for (const item of data) {
+						if (item.Date == null || item.Date.length <= 1 || item.Date.toLowerCase().includes("unannounced") || item.Date.toLowerCase().includes("unclear") || item.Date.toLowerCase().includes("unknown")) {
+							continue;
 						}
+						item.Date = item.Date.replace("Q1", "").replace("Q2", "").replace("Q3", "").replace("Q4", "").trim();
+						let it_split = item.Date.split("/");
+						if (it_split.length != 3) {
+							if (item.Date.includes("/")) {
+								continue;
+							}
+							if (it_split.length != 1) {
+								continue;
+							}
+						}
+
+						if (it_split.length == 1) {
+							const only_numbers = containsOnlyDigits(item.Date);
+							if (!only_numbers || item.Date.length != 4) {
+								continue;
+							}
+							item.Date = "31/12/" + item.Date;
+						}
+
+						filteredData.push(item);
+					}
+
+					data = filteredData.sort((a, b) => {
+						const [aday, amonth, ayear] = a.Date.split("/");
+						const ajsDate = new Date(ayear, amonth - 1, aday);
+
+						const [bday, bmonth, byear] = b.Date.split("/");
+						const bjsDate = new Date(byear, bmonth - 1, bday);
+
+						return ajsDate >= bjsDate;
 					});
-					break;
+				}
+				break;
 				case 'XBA': {
 					const filteredData = [];
 
