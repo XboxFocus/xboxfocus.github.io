@@ -64,6 +64,20 @@ async function ExtractSheetsData(csvData) {
 	}
 
 	rows = rows[my_id].split('<');
+	
+	let mergedLines = [];
+	for (let i = 0; i < rows.length; ++i) {
+		if (rows[i].startsWith("div")) {
+			// Merge with the previous line
+			if (mergedLines.length > 0) {
+				mergedLines[mergedLines.length - 1] += rows[i];
+			}
+		} else {
+			// Add non-"div" lines directly to mergedLines
+			mergedLines.push(rows[i]);
+		}
+	}
+	rows = mergedLines;
 
 	let games = [];
 	let seen_s22 = false;
@@ -80,17 +94,21 @@ async function ExtractSheetsData(csvData) {
 			const classSubstring = rows[i].substring(classStartIndex + 7);
 			const classEndIndex = classSubstring.indexOf('"');
 			if (classEndIndex !== -1) {
-				const classValue = classSubstring.substring(0, classEndIndex);
+				const classValue = classSubstring.substring(0, classEndIndex).replace("softmerge", "").replace(" ", "");
 				cur_class = classValue;
 			}
 		}
 
-		if (!(rows[i].includes("s22") || rows[i].includes("s23")) && !seen_s22) {
+		if (!(rows[i].includes("s22") || rows[i].includes("s23") || rows[i].includes("s29")) && !seen_s22) {
 			continue;
 		}
 
 		switch (cur_class) {
 			default:
+				break;
+			case 0:
+				break;
+			case '123456789':
 				break;
 			case 's11':
 				if (gd.Name.length > 0 && gd.PID.length > 0) {
@@ -100,6 +118,7 @@ async function ExtractSheetsData(csvData) {
 				break;
 			case 's22':
 			case 's23':
+			case 's29':
 				seen_s22 = true;
 				if (gd.Name.length > 0 && gd.PID.length > 0) {
 					games.push(gd);
@@ -109,10 +128,13 @@ async function ExtractSheetsData(csvData) {
 				continue;
 			case 's12':
 			case 's1':
+			case 's30':
+			case 's31':
 				stage = 2;
 				break;
 			case 's13':
 			case 's2':
+			case 's28':
 				stage = 3;
 				break;
 			case 's14':
@@ -141,28 +163,34 @@ async function ExtractSheetsData(csvData) {
 				break;
 			case 's20':
 			case 's9':
+			case 's26':
+			case 's24':
 				stage = 10;
 				break;
 			case 's21':
 			case 's10':
+			case 's25':
+			case 's27':
 				stage = 11;
 				break;
 		} // Switch (cur_class)
 
 		switch (stage) {
 			case 1:
-				const pidIndex = rows[i].indexOf('pid=');
-				if (pidIndex !== -1) {
-					const actualPid = rows[i].substring(pidIndex + 4);
-					const gnameIndex = actualPid.indexOf('&gname');
-					const pid = (gnameIndex !== -1) ? actualPid.substring(0, gnameIndex) : actualPid;
-					if (pid.length > 0) {
-						gd.PID = pid.toUpperCase();
+				{
+					const pidIndex = rows[i].indexOf('pid=');
+					if (pidIndex !== -1) {
+						const actualPid = rows[i].substring(pidIndex + 4);
+						const gnameIndex = actualPid.indexOf('&gname');
+						const pid = (gnameIndex !== -1) ? actualPid.substring(0, gnameIndex) : actualPid;
+						if (pid.length > 0) {
+							gd.PID = pid.toUpperCase();
+						} else {
+							//break;
+						}
 					} else {
 						break;
 					}
-				} else {
-					break;
 				}
 				gd.Name = rows[i].includes(">") ? rows[i].substring(rows[i].lastIndexOf(">") + 1) : rows[i];
 				break;
@@ -351,9 +379,11 @@ async function RefreshList(drawbuttons) {
 							// Compare the item's date with today
 							return jsDate >= today;
 						} else {
-							const currentYear = new Date().getFullYear();
-							if (item.Date == currentYear) {
-								return true;
+							if(item.Date.split("/").length == 0) {
+								const currentYear = new Date().getFullYear();
+								if (item.Date == currentYear) {
+									return true;
+								}
 							}
 						}
 						return false;
