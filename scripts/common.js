@@ -82,7 +82,7 @@ export async function getCachedAppsFolderID(pid) {
 
 	const cafid = await getCachedData(pid);
 	const arr = cafid.split("|");
-	const ret = arr[4] || "";
+	const ret = arr[5] || "";
 	return ret;
 }
 
@@ -90,7 +90,7 @@ export async function getCachedGameExe(pid) {
 
 	const cge = await getCachedData(pid);
 	const arr = cge.split("|");
-	const ret = arr[5] || "";
+	const ret = arr[6] || "";
 	return ret;
 }
 
@@ -111,11 +111,21 @@ export async function getCachedGameBackgroundImg(pid) {
 	const cge = await getCachedData(pid);
 	const arr = cge.split("|");
 	const img = arr[3] || "";
-	if (img.includes("https")) {
+	if (!img.includes("https")) {
+		return "";
+	}
+	
+	if(!img.includes("+")) {
 		return img;
 	}
+	
+	if(img[0] == '+') {
+		return "";
+	}
+	
+	const imgs = img.split("+");
 
-	return "";
+	return imgs[0];
 }
 
 export function getImageQuality() {
