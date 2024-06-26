@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Timer</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: url('https://store-images.s-microsoft.com/image/apps.25268.14035448967936250.445c003a-4263-4f96-a690-a1d654384020.8c96201c-fb89-4275-951f-a3f17afbc4ee') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 2s ease-in-out;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #333;
+			/* text-shadow: 2px 2px 4px #000; */
+        }
+        .time {
+            font-size: 2.5em;
+            margin: 10px 0;
+            animation: pulse 3s infinite, colorChange 3s infinite;
+            text-shadow: 2px 2px 4px #000;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        @keyframes colorChange {
+            /* 0%, 100% { color: #355484; } */
+            /* 50% { color: #d7d2c8; } */
+			/* 0%, 100% { color: #d7d2c8; } */
+			0%, 100% { color: #ffffff; }
+			50% { color: #ffffff; }
+        }
+		button {
+			margin: 10px auto;
+			padding: 10px 20px;
+			background-color: #f2f3f5;
+			color: #000; /* Black text color */
+			border: 1px solid #000; /* Black border */
+			border-radius: 5px;
+			cursor: pointer;
+			transition: background-color 0.3s ease; /* Smooth transition on hover */
+		}
+		button:hover {
+			background-color: #ccc; /* Light gray on hover */
+		}
+		button:active {
+			background-color: #bbb; /* Slightly darker gray when clicked */
+		}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Countdown to</h1>
+		<h1>Metaphor: ReFantazio</h1>
+		<h2>October 11th, 2024 - 00:00</h2>
+        <div id="countdown" class="time"></div>
+		<button class="redirect-button" onclick="window.location.href='/?pid=9N5DV8310XP7&gname=Metaphor:%20ReFantazio';">Game Page (click me)</button>
+    </div>
+
+    <script>
+        function updateCountdown() {
+            const fixedDate = new Date("2024-10-11T00:00:00");
+            const now = new Date();
+            const diff = fixedDate - now;
+
+            const months = Math.floor(diff / (1000 * 60 * 60 * 24 * 30));
+            const weeks = Math.floor((diff % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24 * 7));
+            const days = Math.floor((diff % (1000 * 60 * 60 * 24 * 7)) / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById("countdown").innerHTML = 
+                `${months} months, ${weeks} weeks, ${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+
+            setTimeout(updateCountdown, 1000);
+        }
+
+        updateCountdown();
+    </script>
+</body>
+</html>
