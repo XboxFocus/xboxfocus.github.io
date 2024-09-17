@@ -6,3 +6,4 @@
 *.lock
 *.wsuo
 *.bak
+merger/*.txt
