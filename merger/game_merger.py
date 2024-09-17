@@ -36,26 +36,38 @@ def parse_line(line, existing_names, existing_verticals, index):
 
     # Check for duplicate screenshots
     if len(screenshots) != len(set(screenshots)):
-        logging.warning(f"Duplicate screenshots found in game {title_id}")
+        logging.warning(f"Duplicate screenshots found in game {title_id} aka {name}")
 
     # Check for "?q=" in image URLs
     if "?q=" in vertical_image:
-        logging.warning(f"'?q=' found in vertical image URL in game {title_id}")
+        logging.warning(f"'?q=' found in vertical image URL in game {title_id} aka {name}")
         vertical_image = vertical_image.split("?q=")[0]
     if "?q=" in horizontal_image:
-        logging.warning(f"'?q=' found in horizontal image URL in game {title_id}")
+        logging.warning(f"'?q=' found in horizontal image URL in game {title_id} aka {name}")
         horizontal_image = horizontal_image.split("?q=")[0]
     if "?q=" in square_image:
-        logging.warning(f"'?q=' found in square image URL in game {title_id}")
+        logging.warning(f"'?q=' found in square image URL in game {title_id} aka {name}")
         square_image = square_image.split("?q=")[0]
     for i, screenshot in enumerate(screenshots):
         if "?q=" in screenshot:
-            logging.warning(f"'?q=' found in screenshot URL in game {title_id}")
+            logging.warning(f"'?q=' found in screenshot URL in game {title_id} aka {name}")
             screenshots[i] = screenshot.split("?q=")[0]
 
     # Check for PFN and EXE consistency
     if (pfn and not exe) or (not pfn and exe):
-        logging.warning(f"Inconsistent PFN and EXE in game {title_id}")
+        logging.warning(f"Inconsistent PFN and EXE in game {title_id} aka {name}")
+        
+    if " " in exe:
+        logging.warning(f"EXE has a space: {title_id} aka {name}")
+        
+    if "\\" in exe:
+        logging.warning(f"EXE has a backslash: {title_id} aka {name}")
+        
+    if "." in exe:
+        logging.warning(f"[DEBUG] EXE has a dot: {title_id} aka {name}")
+        
+    if "gdkstub" in exe.strip().lower():
+        logging.warning(f"EXE has GDKStub: {title_id} aka {name}")
 
     if index == 1:
         existing_names.add(name.replace(" ", "").lower())
