@@ -54,7 +54,7 @@
   <script>
     const entries = document.getElementById("entries");
     const xhr = new XMLHttpRequest();
-    xhr.open("GET", "images_cache.txt");
+    xhr.open("GET", "data_cache.txt");
     xhr.onreadystatechange = function() {
 	if (xhr.readyState === 4 && xhr.status === 200) {
             let urlParams = new URLSearchParams(window.location.search);
