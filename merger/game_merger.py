@@ -52,6 +52,9 @@ def parse_line(line, existing_names, existing_verticals, index):
         if "?q=" in screenshot:
             logging.warning(f"'?q=' found in screenshot URL in game {title_id} aka {name}")
             screenshots[i] = screenshot.split("?q=")[0]
+            
+    if len(square_image) == 0:
+        logging.warning(f'[ERROR] {title_id} aka {name} has no square image!')
 
     # Check for PFN and EXE consistency
     if (pfn and not exe) or (not pfn and exe):
@@ -87,6 +90,9 @@ def read_file(filename, existing_names, existing_verticals, index):
     return games
 
 def merge_games(games1, games2, existing_names, existing_verticals):
+
+    revert_screenshots = False
+
     for title_id, game in games2.items():
         if any(keyword in game.name.lower() for keyword in [
         "deluxe", "premium", "upgrade", "edition 20", "ultimate edition", "bundle", "pacchetto", "pre-ordine", "preordine", "preorder", "pre-order",
@@ -105,7 +111,10 @@ def merge_games(games1, games2, existing_names, existing_verticals):
             if not existing_game.horizontal_image:
                 existing_game.horizontal_image = game.horizontal_image
             if not existing_game.screenshots and len(game.screenshots) > 0:
-                existing_game.screenshots = game.screenshots
+                if not revert_screenshots:
+                    existing_game.screenshots = game.screenshots
+                else:
+                    print('a')
             if not existing_game.square_image:
                 existing_game.square_image = game.square_image
             if not existing_game.pfn:
