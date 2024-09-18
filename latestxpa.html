@@ -54,7 +54,9 @@
   <script>
     const entries = document.getElementById("entries");
     const xhr = new XMLHttpRequest();
-    xhr.open("GET", "data_cache.txt");
+	let fn = "images_cache.txt";
+	console.log("Reading: " + fn);
+    xhr.open("GET", fn);
     xhr.onreadystatechange = function() {
 	if (xhr.readyState === 4 && xhr.status === 200) {
             let urlParams = new URLSearchParams(window.location.search);
@@ -70,7 +72,7 @@
 				let it = ((parseInt(page)) * max_in_page) + i;
 				if (it < data.length) {
 					const entryData = data[it].split("|");
-					if (entryData.length === 3) {
+					if (entryData.length === 7) {
 						const entry = document.createElement("div");
 						entry.className = "entry";
 						entry.onclick = function() {
@@ -86,6 +88,8 @@
 						entry.appendChild(name);
 						entry.appendChild(titleId);
 						entries.appendChild(entry);
+					} else {
+						console.log("entryData.length: " + entryData.length + " in line " + data[it] + " at (inverted) position " + it);
 					}
 				}
 			}
