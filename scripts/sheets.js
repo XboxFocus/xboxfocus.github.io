@@ -99,7 +99,7 @@ async function ExtractSheetsData(csvData) {
 			}
 		}
 
-		if (!(rows[i].includes("s22") || rows[i].includes("s23")) && !seen_s22) {
+		if (!(rows[i].includes("s22") || rows[i].includes("s23") || rows[i].includes("s24")) && !seen_s22) {
 			continue;
 		}
 
@@ -118,6 +118,7 @@ async function ExtractSheetsData(csvData) {
 				break;
 			case 's22':
 			case 's23':
+			case 's24':
 				seen_s22 = true;
 				if (gd.Name.length > 0 && gd.PID.length > 0) {
 					games.push(gd);
@@ -127,6 +128,7 @@ async function ExtractSheetsData(csvData) {
 				continue;
 			case 's12':
 			case 's1':
+			case 's25':
 			case 's39':
 			case 's31':
 				stage = 2;
@@ -171,7 +173,6 @@ async function ExtractSheetsData(csvData) {
 			case 's20':
 			case 's9':
 			case 's26':
-			case 's24':
 				stage = 10;
 				break;
 			case 's21':
