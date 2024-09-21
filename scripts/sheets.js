@@ -67,7 +67,7 @@ async function ExtractSheetsData(csvData) {
 	
 	let mergedLines = [];
 	for (let i = 0; i < rows.length; ++i) {
-		if (rows[i].startsWith("div")) {
+		if (rows[i].startsWith("div") || (lines[i].startsWith("a target") && !lines[i].includes("xboxfocus"))) {
 			// Merge with the previous line
 			if (mergedLines.length > 0) {
 				mergedLines[mergedLines.length - 1] += rows[i];
@@ -94,12 +94,12 @@ async function ExtractSheetsData(csvData) {
 			const classSubstring = rows[i].substring(classStartIndex + 7);
 			const classEndIndex = classSubstring.indexOf('"');
 			if (classEndIndex !== -1) {
-				const classValue = classSubstring.substring(0, classEndIndex).replace("softmerge", "").replace(" ", "");
+				const classValue = classSubstring.substring(0, classEndIndex).replace("softmerge-inner", "").replace("softmerge", "").replace(" ", "");
 				cur_class = classValue;
 			}
 		}
 
-		if (!(rows[i].includes("s22") || rows[i].includes("s23") || rows[i].includes("s29")) && !seen_s22) {
+		if (!(rows[i].includes("s22") || rows[i].includes("s23")) && !seen_s22) {
 			continue;
 		}
 
@@ -118,7 +118,6 @@ async function ExtractSheetsData(csvData) {
 				break;
 			case 's22':
 			case 's23':
-			case 's29':
 				seen_s22 = true;
 				if (gd.Name.length > 0 && gd.PID.length > 0) {
 					games.push(gd);
@@ -128,37 +127,45 @@ async function ExtractSheetsData(csvData) {
 				continue;
 			case 's12':
 			case 's1':
-			case 's30':
+			case 's39':
 			case 's31':
 				stage = 2;
 				break;
 			case 's13':
 			case 's2':
-			case 's28':
+			case 's29':
+			case 's38':
 				stage = 3;
 				break;
 			case 's14':
 			case 's3':
+			case 's30':
 				stage = 4;
 				break;
 			case 's15':
 			case 's4':
+			case 's32':
 				stage = 5;
 				break;
 			case 's16':
 			case 's5':
+			case 's33':
+			case 's34':
 				stage = 6;
 				break;
 			case 's17':
 			case 's6':
+			case 's35':
 				stage = 7;
 				break;
 			case 's18':
 			case 's7':
+			case 's36':
 				stage = 8;
 				break;
 			case 's19':
 			case 's8':
+			case 's37':
 				stage = 9;
 				break;
 			case 's20':
@@ -171,6 +178,7 @@ async function ExtractSheetsData(csvData) {
 			case 's10':
 			case 's25':
 			case 's27':
+			case 's28':
 				stage = 11;
 				break;
 		} // Switch (cur_class)
