@@ -67,7 +67,7 @@ async function ExtractSheetsData(csvData) {
 	
 	let mergedLines = [];
 	for (let i = 0; i < rows.length; ++i) {
-		if (rows[i].startsWith("div") || (lines[i].startsWith("a target") && !lines[i].includes("xboxfocus"))) {
+		if (rows[i].startsWith("div") || (rows[i].startsWith("a target") && !rows[i].includes("xboxfocus"))) {
 			// Merge with the previous line
 			if (mergedLines.length > 0) {
 				mergedLines[mergedLines.length - 1] += rows[i];
