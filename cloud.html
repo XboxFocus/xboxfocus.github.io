@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>XboxFocus Cloud Launcher</title>
+	<style>
+	body {
+		font-family: Arial, sans-serif;
+		background-color: #f9f9f9;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	#background-container {
+		width: 0%;
+		height: 0vh;
+		background-size: cover;
+		background-repeat: no-repeat;
+		background-position: center;
+		position: fixed;
+	}
+
+	h1 {
+		color: #333;
+		margin-top: 20px;
+		opacity: 1.0;
+	}
+
+	textarea {
+		width: 300px;
+		height: 40px;
+		background: transparent;
+		border: 1px solid white;
+		border-radius: 2px;
+		margin-bottom: 25px;
+		resize: vertical;
+		opacity: 1.0;
+	}
+
+	.contact__form-textarea {
+		height: 150px;
+		opacity: 1.0;
+	}
+
+	label {
+		width: 180px;
+		display: inline-block;
+		vertical-align: top;
+		opacity: 1.0;
+	}
+
+	button {
+		margin: 10px auto;
+		padding: 10px 20px;
+		background-color: #f2f3f5;
+		color: #000;
+		/* Black text color */
+		border: 1px solid #000;
+		/* Black border */
+		border-radius: 5px;
+		cursor: pointer;
+		transition: background-color 0.3s ease;
+		/* Smooth transition on hover */
+		opacity: 1.0;
+	}
+
+	button:hover {
+		background-color: #ccc;
+		/* Light gray on hover */
+		opacity: 1.0;
+	}
+
+	button:active {
+		background-color: #bbb;
+		/* Slightly darker gray when clicked */
+		opacity: 1.0;
+	}
+
+	img.outline-image {
+		border: 2px solid white;
+		/* Adjust the color and width as desired */
+		opacity: 1.0;
+		max-width: 177px;
+		min-width: 177px;
+		height: 100%;
+		min-height: 265px;
+		max-height: 265px;
+	}
+
+	h4 {
+		display: inline;
+		opacity: 1.0;
+	}
+
+	hr {
+		color: #000;
+		/* Black text color */
+		border-top: 4px solid #505050;
+		border-bottom: 2px solid whitesmoke;
+		opacity: 1.0;
+	}
+
+	.outline-text {
+		color: #fff;
+		/* Text color */
+		text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+		opacity: 1.0;
+	}
+
+	a {
+		color: #fff;
+		/* Set your desired link color */
+		text-decoration: underline;
+		/* Add an underline to links */
+		opacity: 1.0;
+	}
+
+	.custom-opacity {
+		opacity: 0.6;
+		/* Adjust the value (0.0 to 1.0) as desired */
+		/* Other styles specific to these images */
+		z-index: -1;
+		/* Place it behind other content */
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: -1;
+		/* Set dimensions to 0 to avoid taking up layout space */
+		width: 0;
+		height: 0;
+	}
+
+	.cl-container {
+		text-align: center;
+	}
+
+	.cl-square {
+		width: 100px;
+		height: 100px;
+		background-color: black;
+		display: inline-block;
+		background-size: 100% 100%;
+		/* Resize the background image to fit the width and height */
+	}
+	</style>
+</head>
+
+<body>
+	<div id="background-container"></div>
+	<div style="text-align: center; background: rgba(255, 255, 255, 0.4); border-radius: 20px; margin-top: 16px;">
+		<br>
+		<img id="vertical" src="" class="outline-image"></img>
+		<h2 class="outline-text" id="name">(Name)</h2>
+		<h4 class="outline-text" id="found_pid">PID: Not Found</h4>
+		<h4 class="outline-text" id="found_name"> Name: Not Found</h4>
+			<hr />
+			<h3 class="outline-text">Services:</h3>
+			<hr />
+			<div id="square-container" class="cl-container"></div>
+			<hr />
+			<h2 class="outline-text">Made by XboxFocus</h2>
+			<h2 class="outline-text"><a href="https://github.com/XboxFocus">GitHub Profile</a> -- <a href="https://xboxfocus.github.io/sitemap">Our Website</a> -- <a href="https://docs.google.com/spreadsheets/d/1pnX3puJVTR3qa7FjUfEYl1F3jH2eMICwxeBpESdzt6I/edit#gid=0">Xbox Play Anywhere list</a> -- <a href="https://docs.google.com/spreadsheets/d/18v9LIaEkJmij3JU8ByX9pISKHa1FnNQXlA10nH0SvCA/edit#gid=0">Modern Physical Games w/Bonuses List</a> -- <a href="https://t.me/+WRRovH_Lg8VhNDA0">Telegram (🇮🇹)</a></h2>
+			<h3 class="outline-text">Disclaimer: XboxFocus is not affiliated nor associated with Xbox, GitHub, Google, Alphabet, Microsoft, Telegram or any of their subsidiaries. Proceed at your own risk.</h3>
+	</div>
+	<script src="scripts/gamename.js" type="module"></script>
+	<script src="scripts/cloud.js" type="module"></script>
+</body>
+
+</html>

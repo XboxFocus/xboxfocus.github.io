@@ -14,7 +14,7 @@ var image_cache = new Map();
 const allow_bg = false;
 const max_in_page = 32;
 
-class GameData {
+export class GameData {
 	constructor(name, pid, dev, pub, date, pc, gen, exc, cloud, feat, xgp, comment) {
 		this.Name = name;
 		this.PID = pid;
@@ -249,15 +249,20 @@ async function ExtractSheetsData(csvData) {
 
 function ResetFilters() {
 
-	document.getElementById("myDropdown").value = "";
+	let dd = document.getElementById("myDropdown");
+	if (dd != null) {
+		dd.value = "";
+	}
 
 	ResetText();
 }
 
 function ResetText() {
 
-	const text = document.getElementById('myTextInput');
-	text.style.display = "none";
+	const mtext = document.getElementById('myTextInput');
+	if(mtext != null) {
+		mtext.style.display = "none";
+	}
 }
 
 function removeNonAlphanumeric(inputString) {
@@ -290,8 +295,8 @@ async function RefreshList(drawbuttons) {
 			// Process the CSV data (e.g., parse it into an array)
 			const csvData = xhr.responseText;
 
-			const games = await ExtractSheetsData(csvData);
-			let data = games;
+			let sheets_data = await ExtractSheetsData(csvData);
+			let data = sheets_data;
 
 			//console.log("Data size: " + data.length);
 
@@ -915,6 +920,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 	const dropdown = document.getElementById("myDropdown");
 	const textInput = document.getElementById("myTextInput");
+	if(dropdown == null) {
+		return;
+	}
+	if(textInput == null) {
+		return;
+	}
 	const urlParams = new URLSearchParams(window.location.search);
 	let dfilt = urlParams.get('filter');
 	if (dfilt != null && dfilt.length > 0) {
@@ -949,3 +960,5 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 	document.getElementById("myDropdown").onchange = handleSelection;
 });
+
+export { ExtractSheetsData };

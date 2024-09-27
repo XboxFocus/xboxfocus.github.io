@@ -6,6 +6,9 @@ export var cached_data = []
 
 export function getActualName(my_name) {
 
+	if(my_name == null) {
+		return "";
+	}
 	const ret = my_name.replace("°", "&").replace("_", "'").replace("ç", "+");
 	return ret;
 }
