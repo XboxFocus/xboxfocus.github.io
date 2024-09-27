@@ -36,7 +36,10 @@ import { GameData, ExtractSheetsData } from './sheets.js';
 							window.open(url);
 						};
 						imageUrl = "https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE2PlDL";
-						below_text = "Play with Game Pass Ultimate.\nRequires an active subscription to the service."
+						below_text = "Play with Game Pass Ultimate.\nRequires an active subscription to the service.";
+						if(game_data.Cloud.toLowerCase() == "touch") {
+							below_text = below_text + "\nTouch controls available.";
+						}
 						break;
 					case 1:
 						square.onclick = function() {
@@ -45,7 +48,7 @@ import { GameData, ExtractSheetsData } from './sheets.js';
 							window.open(url);
 						};
 						imageUrl = "https://blogs.nvidia.com/wp-content/uploads/2021/02/GFN-200x200.png";
-						below_text = "Play with GeForce NOW. Requires ownership of the game, or a subscription to PC Game Pass if it is included in the service."
+						below_text = "Play with GeForce NOW.\nRequires ownership of the game, or a subscription to Game Pass (PC or Ultimate) if it is included in the service.\nYou must link your Xbox account (to your NVIDIA GeForce Now account) beforehand.";
 						break;
 				}
 
@@ -55,7 +58,7 @@ import { GameData, ExtractSheetsData } from './sheets.js';
 				// Create the text paragraph
 				textNode.className = 'outline-text';
 				
-				textNode.textContent = below_text;
+				textNode.innerText = below_text;
 				
 				if (cont.children.length > 0) {
 					cont.appendChild(myhr);
