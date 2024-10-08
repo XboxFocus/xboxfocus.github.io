@@ -126,6 +126,12 @@ async function ExtractSheetsData(csvData) {
 				}
 				stage = 1;
 				continue;
+			case 's1':
+			case 's12':
+			case 's27':
+			case 's41':
+				stage = 2;
+				break;
 			case 's2':
 			case 's13':
 			case 's33':
