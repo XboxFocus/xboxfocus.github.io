@@ -99,7 +99,7 @@ async function ExtractSheetsData(csvData) {
 			}
 		}
 
-		if (!(rows[i].includes("s22") || rows[i].includes("s23") || rows[i].includes("s24")) && !seen_s22) {
+		if (!(rows[i].includes("s22") || rows[i].includes("s23") || rows[i].includes("s26")) && !seen_s22) {
 			continue;
 		}
 
@@ -118,7 +118,7 @@ async function ExtractSheetsData(csvData) {
 				break;
 			case 's22':
 			case 's23':
-			case 's24':
+			case 's26':
 				seen_s22 = true;
 				if (gd.Name.length > 0 && gd.PID.length > 0) {
 					games.push(gd);
@@ -126,60 +126,53 @@ async function ExtractSheetsData(csvData) {
 				}
 				stage = 1;
 				continue;
-			case 's12':
-			case 's1':
-			case 's25':
-			case 's39':
-			case 's31':
-				stage = 2;
-				break;
-			case 's13':
 			case 's2':
-			case 's29':
+			case 's13':
+			case 's33':
 			case 's38':
 				stage = 3;
 				break;
-			case 's14':
 			case 's3':
-			case 's30':
+			case 's14':
+			case 's34':
 				stage = 4;
 				break;
-			case 's15':
 			case 's4':
-			case 's32':
+			case 's15':
 				stage = 5;
 				break;
-			case 's16':
 			case 's5':
-			case 's33':
-			case 's34':
+			case 's16':
+			case 's39':
 				stage = 6;
 				break;
 			case 's17':
 			case 's6':
-			case 's35':
+			case 's28':
+			case 's40':
 				stage = 7;
 				break;
 			case 's18':
 			case 's7':
-			case 's36':
+			case 's29':
 				stage = 8;
 				break;
-			case 's19':
 			case 's8':
-			case 's37':
+			case 's19':
+			case 's30':
 				stage = 9;
 				break;
 			case 's20':
-			case 's9':
-			case 's26':
+			case 's24':
+			case 's31':
+			case 's35':
+			case 's36':
 				stage = 10;
 				break;
 			case 's21':
-			case 's10':
 			case 's25':
-			case 's27':
-			case 's28':
+			case 's32':
+			case 's37':
 				stage = 11;
 				break;
 		} // Switch (cur_class)
