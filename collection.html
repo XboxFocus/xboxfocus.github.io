@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>XPA List Maker</title>
+	<style>
+	.container {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		align-items: center;
+		text-align: center;
+		white-space: pre-wrap;
+	}
+
+	.entry {
+		position: relative;
+		text-align: center;
+		margin: 10px;
+		cursor: pointer;
+		max-width: 200px;
+		min-height: 260px;
+		white-space: pre-wrap;
+	}
+
+	.entry-container {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		margin: 10px;
+		position: relative;
+	}
+
+	.collection_add,
+	.collection_remove {
+		position: absolute;
+		top: 18px;
+		right: 30px;
+		width: 41px;
+		height: 41px;
+		cursor: pointer;
+		z-index: 10;
+	}
+
+	.entry img {
+		max-width: 177px;
+		min-width: 177px;
+		height: 100%;
+		min-height: 177px;
+		max-height: 177px;
+	}
+
+	.entry tid,
+	.entry titl {
+		text-align: center;
+		margin: 10px;
+		width: 80%;
+		height: 100%;
+		white-space: pre-wrap;
+	}
+
+	.footer {
+		text-align: center;
+	}
+
+	.load-button,
+	.download-button {
+		font-size: 20px;
+		font-weight: bold;
+		padding: 10px 20px;
+		cursor: pointer;
+	}
+	</style>
+</head>
+
+<body>
+	<br>
+	<div style="text-align: center;">
+		<h2>XPA List Maker -- xboxfocus.github.io</h2>
+	</div><br>
+	<hr>
+	<br>
+	<div class="container" id="entries"></div>
+	<div style="text-align: center;">
+		<input type="file" id="fileInput" accept=".xfdata">
+		<span id="fileName"></span>
+		<button class="load-button" id="loadButton" onclick="loadEntries()">Load</button>
+		<button class="download-button" id="downloadButton">Download List</button>
+	</div>
+	<script>
+	const entries = document.getElementById("entries");
+	let savedGames = [];
+	let loadedFileContent = null;
+	let loadedFileLines = ["List", "false"];
+	let fileNameDisplay = document.getElementById("fileName");
+	let loadButton = document.getElementById("loadButton");
+	let downloadButton = document.getElementById("downloadButton");
+	downloadButton.disabled = true;
+	// Add this snippet at the beginning of your script, before any event listeners or functions
+	window.onload = function() {
+		fileNameDisplay.textContent = ''; // Clear the file name display on page load
+		document.getElementById('fileInput').value = ''; // Clear the file input value on page load
+	};
+	document.getElementById('fileInput').addEventListener('change', function(event) {
+		const file = event.target.files[0];
+		if(file) {
+			const reader = new FileReader();
+			reader.onload = function(e) {
+				loadedFileContent = e.target.result;
+				loadedFileLines = loadedFileContent.split('\n').slice(0, 2);
+				fileNameDisplay.textContent = `Loaded file: ${file.name}`;
+			};
+			reader.readAsText(file);
+		}
+	});
+
+	function loadEntries() {
+		loadButton.disabled = true; // Disable the load button after clicking
+		const xhr = new XMLHttpRequest();
+		let fn = "data_cache.txt";
+		console.log("Reading: " + fn);
+		xhr.open("GET", fn);
+		xhr.onreadystatechange = function() {
+			if(xhr.readyState === 4 && xhr.status === 200) {
+				let urlParams = new URLSearchParams(window.location.search);
+				let page = urlParams.get('page');
+				if(page == null) {
+					page = "0";
+				}
+				let max_in_page = 32;
+				document.title = "Latest XPA Games -- Page " + (parseInt(page) + 1);
+				let data = xhr.responseText.split("\n");
+				for(let i = 0; i < data.length; i++) {
+					const entryData = data[i].split("|");
+					if(entryData.length === 7) {
+						const entryContainer = document.createElement("div");
+						entryContainer.className = "entry-container";
+						const collectionAdd = document.createElement("img");
+						collectionAdd.src = "collection_add.png";
+						collectionAdd.className = "collection_add";
+						collectionAdd.setAttribute("data-pid", entryData[1].trim()); // Ensure no extra spaces
+						const collectionRemove = document.createElement("img");
+						collectionRemove.src = "collection_remove.png";
+						collectionRemove.className = "collection_remove";
+						collectionRemove.setAttribute("data-pid", entryData[1].trim()); // Ensure no extra spaces
+						collectionRemove.style.display = "none";
+						if(loadedFileContent && loadedFileContent.includes(entryData[1])) {
+							collectionAdd.style.display = "none";
+							collectionRemove.style.display = "block";
+							savedGames.push(entryData[1]);
+						}
+						collectionAdd.onclick = function(event) {
+							event.stopPropagation();
+							if(!savedGames.includes(entryData[1])) {
+								savedGames.push(entryData[1]);
+								collectionAdd.style.display = "none";
+								collectionRemove.style.display = "block";
+							}
+						};
+						collectionRemove.onclick = function(event) {
+							event.stopPropagation();
+							savedGames = savedGames.filter(pid => pid !== entryData[1]);
+							collectionRemove.style.display = "none";
+							collectionAdd.style.display = "block";
+						};
+						const entry = document.createElement("div");
+						entry.className = "entry";
+						entry.onclick = function() {
+							window.open("https://xboxfocus.github.io?pid=" + entryData[1] + "&gname=" + entryData[0]);
+						};
+						const img = document.createElement("img");
+						img.src = entryData[4].length === 0 ? "unknownsquare.png" : entryData[4] + "?q=90&w=177&h=177";
+						const name = document.createElement("tid");
+						name.textContent = entryData[1] + '\n';
+						const titleId = document.createElement("titl");
+						titleId.innerHTML = "<b>" + entryData[0] + "<\/b>";
+						entry.appendChild(img);
+						entry.appendChild(name);
+						entry.appendChild(titleId);
+						entryContainer.appendChild(collectionAdd);
+						entryContainer.appendChild(collectionRemove);
+						entryContainer.appendChild(entry);
+						entries.appendChild(entryContainer);
+					} else {
+						console.log("entryData.length: " + entryData.length + " in line " + data[i] + " at (inverted) position " + i);
+					}
+				}
+				if(loadedFileContent) {
+					const lines = loadedFileContent.split('\n');
+					if(lines.length > 2) {
+						savedGames = lines[2].split('|');
+						savedGames.forEach(pid => {
+							const addBtn = document.querySelector(`.collection_add[data-pid="${pid.trim()}"]`);
+							const removeBtn = document.querySelector(`.collection_remove[data-pid="${pid.trim()}"]`);
+							if(addBtn && removeBtn) {
+								addBtn.style.display = "none";
+								removeBtn.style.display = "block";
+							}
+						});
+					}
+				}
+				downloadButton.style.display = "inline-block";
+				downloadButton.disabled = false; // Ensure the button is enabled
+				downloadButton.onclick = function() {
+					// Combine all PIDs into a single string separated by '|'
+					const allPIDs = savedGames.map(pid => pid.trim()).join('|').replace(/[\r\n]+/g, '').replace("\\n", "\n").replace("\n", "");
+					console.log("allPIDs:", allPIDs);
+					// Create the content for the file with all PIDs on the third line
+					const content = `${loadedFileLines[0]}\n${loadedFileLines[1]}\n${allPIDs}`;
+					// Create a blob and download the file
+					const blob = new Blob([content], {
+						type: 'text/plain;charset=utf-8'
+					});
+					const link = document.createElement('a');
+					link.href = URL.createObjectURL(blob);
+					link.download = 'list.xfdata';
+					link.click();
+				};
+			}
+		};
+		xhr.send();
+	}
+	</script><br>
+	<hr>
+	<br>
+	<footer id="footer" class="footer"></footer>
+	<br>
+</body>
+
+</html>
