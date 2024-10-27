@@ -669,6 +669,8 @@ async function createEntry(entryData) {
     entry.appendChild(name);
     entry.appendChild(titleId);
 
+    await sleep(12);
+
     return entry;
 }
 
