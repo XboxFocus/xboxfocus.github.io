@@ -21,7 +21,9 @@ let loadedFileLines = ["List", "false"];
 const fileNameDisplay = document.getElementById("fileName");
 const loadButton = document.getElementById("loadButton");
 const downloadButton = document.getElementById("downloadButton");
+const filterCheckbox = document.getElementById("filterCheckbox");
 downloadButton.disabled = true;
+filterCheckbox.disabled = true;
 
 window.onload = initializePage;
 
@@ -30,6 +32,7 @@ document.getElementById('fileInput').addEventListener('change', handleFileInputC
 async function initializePage() {
     fileNameDisplay.textContent = '';
     document.getElementById('fileInput').value = '';
+	filterCheckbox.checked = false; // Ensure the checkbox is unchecked
 }
 
 function handleFileInputChange(event) {
@@ -42,6 +45,7 @@ function handleFileInputChange(event) {
             fileNameDisplay.textContent = `Loaded file: ${file.name}`;
         };
         reader.readAsText(file);
+		filterCheckbox.disabled = false;
     }
 }
 
@@ -52,11 +56,16 @@ async function fetchSheetsData() {
 
 async function loadCollectionEntries() {
     loadButton.disabled = true;
+	filterCheckbox.disabled = true;
     const sheetsData = await fetchSheetsData();
     const dataCache = await fetchDataCache();
 
+    entries.innerHTML = ''; // Clear previous entries
+
     sheetsData.forEach(entryData => {
-        createEntry(entryData, dataCache);
+        if (!filterCheckbox.checked || (loadedFileContent && loadedFileContent.includes(getActualPID(entryData.PID.trim()).trim()))) {
+            createEntry(entryData, dataCache);
+        }
     });
 
     if (loadedFileContent) {
@@ -64,6 +73,7 @@ async function loadCollectionEntries() {
     }
 
     setupDownloadButton();
+	filterCheckbox.disabled = true; // Disable the checkbox
 }
 
 async function fetchDataCache() {
@@ -94,13 +104,17 @@ function createEntry(entryData, dataCache) {
         savedGames.push(pid);
     }
 
-    collectionAdd.onclick = () => handleCollectionAdd(pid, collectionAdd, collectionRemove);
-    collectionRemove.onclick = () => handleCollectionRemove(pid, collectionAdd, collectionRemove);
+    if (!filterCheckbox.checked) {
+        collectionAdd.onclick = () => handleCollectionAdd(pid, collectionAdd, collectionRemove);
+        collectionRemove.onclick = () => handleCollectionRemove(pid, collectionAdd, collectionRemove);
+    }
 
     const entry = createEntryElement(entryData, pid, name, dataCache);
 
-    entryContainer.appendChild(collectionAdd);
-    entryContainer.appendChild(collectionRemove);
+	if (!filterCheckbox.checked) {
+		entryContainer.appendChild(collectionAdd);
+		entryContainer.appendChild(collectionRemove);
+	}
     entryContainer.appendChild(entry);
     entries.appendChild(entryContainer);
 }
@@ -202,3 +216,5 @@ function downloadFile() {
 }
 
 window.loadCollectionEntries = loadCollectionEntries;
+
+filterCheckbox.addEventListener('change', loadCollectionEntries);
