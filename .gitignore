@@ -6,6 +6,5 @@
 *.lock
 *.wsuo
 *.bak
-merger/*.txt
 /merger/__pycache__
-merger/start.bat
+merger/*.txt

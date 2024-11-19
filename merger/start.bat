@@ -1,0 +1,1 @@
+python .\game_merger.py .\data_cache.txt .\images_cache.txt new_cache.txt
