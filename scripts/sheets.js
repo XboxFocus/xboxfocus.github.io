@@ -364,7 +364,9 @@ async function applyFilters(data, dfilt, dtext) {
             data = data.filter(item => item.Date.includes(currentYear));
             break;
         case 'LIY':
-            data = data.filter(item => {
+			const currentYear = new Date().getFullYear();
+			data = data.filter(item => item.Date.includes(currentYear));
+			data = data.filter(item => {
 
                 if (item.Date.split("/").length == 3) {
                     const [day, month, year] = item.Date.split("/");
@@ -375,7 +377,6 @@ async function applyFilters(data, dfilt, dtext) {
                     return jsDate >= today;
                 } else {
                     if (item.Date.split("/").length == 0) {
-                        const currentYear = new Date().getFullYear();
                         if (item.Date == currentYear) {
                             return true;
                         }
