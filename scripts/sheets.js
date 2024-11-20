@@ -365,7 +365,7 @@ async function applyFilters(data, dfilt, dtext) {
             break;
         case 'LIY':
 			const cYear = new Date().getFullYear();
-			data = data.filter(item => item.Date.includes(currentYear));
+			data = data.filter(item => item.Date.includes(cYear));
 			data = data.filter(item => {
 
                 if (item.Date.split("/").length == 3) {
